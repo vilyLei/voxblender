@@ -48,24 +48,25 @@ def toUint32List(dataStr):
 
 
 ################################
+rootDir = "D:/dev/webProj/"
+rootDir = "D:/dev/webdev/"
 
-
-file_vs = open('D:/dev/webProj/voxblender/models/verticesBox.bin','rb')
+file_vs = open(rootDir + 'voxblender/models/verticesBox.bin','rb')
 dataStr_vs = file_vs.read()
 data_vs = list(toTuplesByStep3(toFloat32List(dataStr_vs)))
 print("data_vs:\n", data_vs)
-file_ivs = open('D:/dev/webProj/voxblender/models/indicesBox.bin','rb')
+file_ivs = open(rootDir + 'voxblender/models/indicesBox.bin','rb')
 dataStr_ivs = file_ivs.read()
 data_ivs = list(toTuplesByStep3(toUint16List(dataStr_ivs)))
 print("data_ivs:\n", data_ivs)
 
-file_uvs = open('D:/dev/webProj/voxblender/models/uvBox.bin','rb')
+file_uvs = open(rootDir + 'voxblender/models/uvBox.bin','rb')
 dataStr_uvs = file_uvs.read()
 data_uvs = list(toTuplesByStep2(toFloat32List(dataStr_uvs)))
 print("data_uvs:\n", data_uvs)
 
 
-file_nvs = open('D:/dev/webProj/voxblender/models/normalBox.bin','rb')
+file_nvs = open(rootDir + 'voxblender/models/normalBox.bin','rb')
 dataStr_nvs = file_nvs.read()
 data_nvs = list(toTuplesByStep3(toFloat32List(dataStr_nvs)))
 print("data_nvs:\n", data_nvs)
