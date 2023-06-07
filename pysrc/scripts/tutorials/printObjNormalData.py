@@ -14,8 +14,8 @@ cube01 = bpy.data.objects["Cube"]
 ## 获取网格数据
 mesh = cube01.data
 # 获取所有顶点法线
-vertex_normals = mesh.vertex_normals
 
+vertex_normals = mesh.vertex_normals
 # 遍历每个顶点和其法线
 for i, vertex in enumerate(mesh.vertices):
     normal = vertex_normals[i]

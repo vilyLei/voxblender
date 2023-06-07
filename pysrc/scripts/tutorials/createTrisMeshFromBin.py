@@ -9,13 +9,13 @@ print("\n")
 print(currTime)
 
 
-def toFloatList(dataStr):
+def toFloat32List(dataStr):
     bytesTotal = len(dataStr)
     print("bytesTotal: ", bytesTotal)
     # 下面的双斜线是除法结果为整数
     segLen = bytesTotal//4
     print("segLen: ", segLen)
-    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/4)+'f',d_str)
+    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/4)+'f',dataStr)
     data = struct.unpack(segLen*'f',dataStr)
     return data
 ###
@@ -25,13 +25,24 @@ def toUint16List(dataStr):
     # 下面的双斜线是除法结果为整数
     segLen = bytesTotal//2
     print("segLen: ", segLen)
-    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/2)+'f',d_str)
+    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/2)+'f',dataStr)
     data = struct.unpack(segLen*'H',dataStr)
     return data
+###
+def toUint32List(dataStr):
+    bytesTotal = len(dataStr)
+    print("bytesTotal: ", bytesTotal)
+    # 下面的双斜线是除法结果为整数
+    segLen = bytesTotal//4
+    print("segLen: ", segLen)
+    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/4)+'I',dataStr)
+    data = struct.unpack(segLen*'I',dataStr)
+    return data
+
 ################################
 file_vs = open('D:/dev/webProj/voxblender/models/geom01_vs.bin','rb')
 dataStr_vs = file_vs.read()
-data_vs = toFloatList(dataStr_vs)
+data_vs = toFloat32List(dataStr_vs)
 print("data_vs:\n", data_vs)
 file_ivs = open('D:/dev/webProj/voxblender/models/geom01_ivs.bin','rb')
 dataStr_ivs = file_ivs.read()
@@ -83,3 +94,12 @@ new_collection.objects.link(new_object)
 #resultP = list(lsa[i:i + n] for i in range(0, len(lsa), n))
 #tupleb = (0,1,2,3,4,5,6,7,8)
 #resultP = tuple(tupleb[i:i + n] for i in range(0, len(tupleb), n))
+
+# uv_layer = new_object.data.uv_layers.active
+# print("uv_layer: ", uv_layer)
+# # 遍历 UV 数据
+# for loop in new_object.data.loops:
+#     uv_coords = uv_layer.data[loop.index].uv
+#     print("UV coordinates for loop %d: (%f, %f)" % (loop.index, uv_coords[0], uv_coords[1]))
+
+print("proc end.")

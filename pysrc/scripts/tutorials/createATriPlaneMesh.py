@@ -1,6 +1,7 @@
 import bpy
 import time
 
+# thanks: https://b3d.interplanety.org/en/how-to-create-mesh-through-the-blender-python-api/
 
 now = int(round(time.time()*1000))
 currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
