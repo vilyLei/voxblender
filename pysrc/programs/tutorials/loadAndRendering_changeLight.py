@@ -22,7 +22,7 @@ cube01 = bpy.data.objects["Cube"]
 if cube01:
     bpy.data.objects.remove(cube01)
 else:
-    print("has not the defaukt Cube.")
+    print("has not the default Cube.")
 
 print("###  ###  ###  ###  ###")
 # 加载OBJ模型
