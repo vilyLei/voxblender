@@ -42,6 +42,16 @@ def toUint32List(dataStr):
     data = struct.unpack(segLen*'I',dataStr)
     return data
 
+def toUintLongLongList(dataStr):
+    bytesTotal = len(dataStr)
+    print("bytesTotal: ", bytesTotal)
+    # 下面的双斜线是除法结果为整数
+    segLen = bytesTotal//8
+    print("segLen: ", segLen)
+    # 如果考虑字节序，字节序为big-endian，则以下语句改为  data = struct.unpack('>'+str(bytesTotal/8)+'Q',d_str)
+    data = struct.unpack(segLen*'Q',dataStr)
+    return data
+
 file = open('../../models/geom01_vs.bin','rb')
 dataStr = file.read()
 data_vs = toFloatList(dataStr)
