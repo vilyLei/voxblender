@@ -10,8 +10,8 @@ def render_scene(scene, on_render_progress):
     # bpy.app.handlers.render_write.append(on_render_progress)
     # # 渲染场景
     # bpy.ops.render.render(write_still=True)
-    rootDir = "D:/dev/webProj/"
-    #rootDir = "D:/dev/webdev/"
+    # rootDir = "D:/dev/webProj/"
+    rootDir = "D:/dev/webdev/"
     # 渲染进度回调函数的设置
     bpy.app.handlers.render_write.append(on_render_progress)
 
@@ -31,12 +31,14 @@ def render_scene(scene, on_render_progress):
     # 设置设备类型为GPU
     scene.cycles.device = 'GPU'
 
+    rimg_resolution  = 4096
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
     renderer.filepath = rootDir + "voxblender/renderingImg/multiThrRenderBlenderFile.png"
-    renderer.resolution_x = 1024
-    renderer.resolution_y = 1024
+    renderer.resolution_x = rimg_resolution
+    renderer.resolution_y = rimg_resolution
+    bpy.context.scene.cycles.samples = 64
     bpy.ops.render.render(write_still=True)
     # bpy.ops.render.render('INVOKE_DEFAULT', animation=False, write_still=True)
 
