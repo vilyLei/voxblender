@@ -83,8 +83,8 @@ def start_render():
     #
 def renderingCurrSceneToImg():
     
-    rootDir = "D:/dev/webProj/"
-    #rootDir = "D:/dev/webdev/"
+    # rootDir = "D:/dev/webProj/"
+    rootDir = "D:/dev/webdev/"
     # 渲染进度回调函数的设置
     bpy.app.handlers.render_write.append(render_progress)
 
@@ -104,12 +104,16 @@ def renderingCurrSceneToImg():
     # 设置设备类型为GPU
     bpy.context.scene.cycles.device = 'GPU'
 
+    # bpy.data.scenes["Scene"].cycles.samples = VALUE
+
+    rimg_resolution  = 4096
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
     renderer.filepath = rootDir + "voxblender/renderingImg/renderingFromConfig.png"
-    renderer.resolution_x = 1024
-    renderer.resolution_y = 1024
+    renderer.resolution_x = rimg_resolution
+    renderer.resolution_y = rimg_resolution
+    bpy.context.scene.cycles.samples = 64
     # bpy.ops.render.render(write_still=True)
     bpy.ops.render.render('INVOKE_DEFAULT', animation=False, write_still=True)
 
@@ -156,4 +160,4 @@ if __name__ == "__main__":
     sysRenderingCfg.parseArgvParams(argv)
     rtaskRun()
 
-# D:\programs\blender\blender.exe -b -P .\loadMeshAndRenderingFromRawData.py -- dir=./
+# D:\programs\blender\blender.exe -b -P .\renderingFromConfig.py -- dir=./assets/
