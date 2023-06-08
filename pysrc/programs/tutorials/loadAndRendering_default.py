@@ -3,8 +3,12 @@ import bpy
 import time
 
 def renderAObj() :
-    obj_file = "D:/dev/webProj/voxblender/models/box02.obj"
-    output_file = "D:/dev/webProj/voxblender/renderingImg/rendering01.png"
+    
+    # rootDir = "D:/dev/webProj/"
+    rootDir = "D:/dev/webdev/"
+
+    obj_file = rootDir + "voxblender/models/box02.obj"
+    output_file = rootDir + "voxblender/renderingImg/rendering01.png"
 
     print("bpy.data.objects: ", bpy.data.objects)
     print("lsit(bpy.data.objects): ", list(bpy.data.objects))

@@ -8,6 +8,7 @@ import threading
 import time
 # import bmesh
 # import struct
+from bpy import context
 
 # 下面这三句代码用于 background 运行时，能正常载入自定义python module
 dir = os.path.dirname(bpy.data.filepath)
@@ -106,7 +107,7 @@ def renderingCurrSceneToImg():
 
     # bpy.data.scenes["Scene"].cycles.samples = VALUE
 
-    rimg_resolution  = 4096
+    rimg_resolution  = 1024
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
@@ -131,7 +132,17 @@ def clearScene():
     else:
         print("has not the default Cube object in the current scene.")
 ################################################################################
-
+def fitToCamera():
+    # Select objects that will be rendered
+    for obj in context.scene.objects:
+        obj.select_set(False)
+    for obj in context.visible_objects:
+        if not (obj.hide_get() or obj.hide_render):
+            obj.select_set(True)
+    #
+    print("fitToCamera ops ...")
+    bpy.ops.view3d.camera_to_view_selected()
+    #
 def rtaskRun():
 
     clearScene()
@@ -143,6 +154,7 @@ def rtaskRun():
     loadMeshFromCfgFlag = loadAObjMeshFromCfg()
     print("loadMeshFromCfgFlag: ", loadMeshFromCfgFlag)
     if loadMeshFromCfgFlag:
+        fitToCamera()
         renderingCurrSceneToImg()
     else:
         print("non-rendering ...")
