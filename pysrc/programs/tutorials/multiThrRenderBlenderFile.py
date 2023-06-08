@@ -54,7 +54,7 @@ thread = threading.Thread(target=render_scene, args=(scene, on_render_progress))
 thread.start()
 
 while thread.is_alive():
-    print("###")
+    # print("###")
     time.sleep(0.1)
     #
 # D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\multiThrRenderBlenderFile.py
