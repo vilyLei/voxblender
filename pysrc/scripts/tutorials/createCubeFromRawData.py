@@ -49,7 +49,7 @@ def toUint32List(dataStr):
 
 ################################
 rootDir = "D:/dev/webProj/"
-rootDir = "D:/dev/webdev/"
+#rootDir = "D:/dev/webdev/"
 
 file_vs = open(rootDir + 'voxblender/models/verticesBox.bin','rb')
 dataStr_vs = file_vs.read()
@@ -151,7 +151,7 @@ bm.free()
 # 更新mesh的法线
 mesh.calc_normals()
 
-robjEntity.scale = (0.3,0.3, 0.3)
+robjEntity.scale = (0.1,0.1, 0.1)
 
 # 添加UV纹理到物体
 # mesh.uv_textures.new("UVMap")
