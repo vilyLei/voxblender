@@ -2,7 +2,18 @@ import bpy
 import bmesh
 import struct
 
-
+def clearScene():    
+    obj = bpy.data.objects["Cube"]
+    if obj:
+        bpy.data.objects.remove(obj)
+    else:
+        print("has not the default Cube object in the current scene.")
+################################################################################
+def toTuplesByStep4(datals):
+    ds = tuple(datals)
+    n = 4
+    rds = tuple(ds[i:i + n] for i in range(0, len(ds), n))
+    return rds
 
 def toTuplesByStep3(datals):
     ds = tuple(datals)
@@ -48,61 +59,49 @@ def toUint32List(dataStr):
 
 
 ################################
+
+clearScene()
+
 rootDir = "D:/dev/webProj/"
 #rootDir = "D:/dev/webdev/"
 
-file_vs = open(rootDir + 'voxblender/models/verticesBox.bin','rb')
-dataStr_vs = file_vs.read()
-data_vs = list(toTuplesByStep3(toFloat32List(dataStr_vs)))
-print("data_vs:\n", data_vs)
-file_ivs = open(rootDir + 'voxblender/models/indicesBox.bin','rb')
-dataStr_ivs = file_ivs.read()
-data_ivs = list(toTuplesByStep3(toUint16List(dataStr_ivs)))
-print("data_ivs:\n", data_ivs)
+def getFloat32FileData(dir, filePath, stride = 3):
+    file_vs = open(dir + filePath,'rb')
+    dataStr = file_vs.read()
+    if stride == 3:
+        return list(toTuplesByStep3(toFloat32List(dataStr)))
+    else:
+        return list(toTuplesByStep2(toFloat32List(dataStr)))
 
-file_uvs = open(rootDir + 'voxblender/models/uvBox.bin','rb')
-dataStr_uvs = file_uvs.read()
-data_uvs = list(toTuplesByStep2(toFloat32List(dataStr_uvs)))
-print("data_uvs:\n", data_uvs)
+def getUint16FileData(dir, filePath, stride = 3):
+    file_vs = open(dir + filePath,'rb')
+    dataStr = file_vs.read()
+    if stride == 3:
+        return list(toTuplesByStep3(toUint16List(dataStr)))
+    else:
+        return list(toTuplesByStep4(toUint16List(dataStr)))
 
+def getUint32FileData(dir, filePath, stride = 3):
+    file_vs = open(dir + filePath,'rb')
+    dataStr = file_vs.read()
+    if stride == 3:
+        return list(toTuplesByStep3(toUint32List(dataStr)))
+    else:
+        return list(toTuplesByStep4(toUint32List(dataStr)))
 
-file_nvs = open(rootDir + 'voxblender/models/normalBox.bin','rb')
-dataStr_nvs = file_nvs.read()
-data_nvs = list(toTuplesByStep3(toFloat32List(dataStr_nvs)))
-print("data_nvs:\n", data_nvs)
+################################################################
 
-# 顶点数据
-vertices = [
-    (1, 0, 0), (0, 1, 0), (0, 0, 1),
-    (1, 1, 0), (1, 0, 1), (0, 1, 1),
-    (1, 1, 1), (0, 0, 0)
-]
+vertices = getFloat32FileData(rootDir, 'voxblender/models/verticesBox.bin')
+print("vertices:\n", vertices)
 
-# 面数据
-faces = [
-    (0, 1, 3), (0, 3, 4), (7, 6, 5),
-    (7, 5, 2), (0, 4, 5), (0, 5, 1),
-    (1, 5, 6), (1, 6, 3), (3, 6, 7),
-    (3, 7, 4), (4, 7, 2), (4, 2, 5)
-]
+faces = getUint16FileData(rootDir, 'voxblender/models/indicesBox.bin')
+print("faces:\n", faces)
 
-# 法线数据
-normals = [
-    (1, 0, 0), (0, 1, 0), (0, 0, 1),
-    (-1, 0, 0), (0, -1, 0), (0, 0, -1)
-]
+uv_coords = getFloat32FileData(rootDir, 'voxblender/models/uvBox.bin', 2)
+print("uv_coords:\n", uv_coords)
 
-# UV 数据
-uv_coords = [
-    (1, 0), (0, 1), (0, 0),
-    (1, 1), (1, 1), (0, 1),
-    (1, 1), (0, 0)
-]
-
-vertices = data_vs
-faces = data_ivs
-normals = data_nvs
-uv_coords = data_uvs
+normals = getFloat32FileData(rootDir, 'voxblender/models/normalBox.bin')
+print("normals:\n", normals)
 
 # 创建mesh和物体
 mesh = bpy.data.meshes.new("Cube")
@@ -130,8 +129,6 @@ print("len(faces): ", len(faces))
 # 添加面
 for k in range(0, len(faces)):
     bm.faces.new([bm.verts[i] for i in faces[k]])
-# bm.faces.new([bm.verts[i] for i in faces[0]])
-# bm.faces.new([bm.verts[i] for i in faces[1]])
 # ... 在这里为其他面重复这个过程
 
 # 添加法线
@@ -164,11 +161,14 @@ for i, vertex in enumerate(robjEntity.data.vertices):
 ################################################################
 print("build proc end ...")
 print("ready to rendering ...")
+
 renderer = bpy.context.scene.render
+
+renderer.engine = 'BLENDER_EEVEE'
 renderer.image_settings.file_format='PNG'
-renderer.filepath = rootDir + "voxblender/renderingImg/rawDataMesh.PNG"
+renderer.filepath = rootDir + "voxblender/renderingImg/loadAndRenderingMeshFromeRawData.PNG"
 renderer.resolution_x = 512 #perhaps set resolution in code
 renderer.resolution_y = 512
 bpy.ops.render.render(write_still=True)
 print("rendering proc end ...")
-# D:\programs\blender\blender.exe -b -P .\createMeshAndRenderingFromRawData.py
+# D:\programs\blender\blender.exe -b -P .\loadMeshAndRenderingFromRawData.py
