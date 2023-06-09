@@ -65,6 +65,16 @@ def loadAObjMesh(obj_file):
     # obj_object.scale = (0.1,0.1,0.1)
     print("obj_object: ", obj_object)
     #
+    
+def loadAFbxMesh(fbx_file):
+    # 加载FBX模型
+    imported_object = bpy.ops.import_scene.fbx(filepath=fbx_file)
+    print("list(bpy.context.selected_objects): ", list(bpy.context.selected_objects))
+    fbx_object = bpy.context.selected_objects[0]
+    # obj_object.scale = (0.1,0.1,0.1)
+    print("fbx_object: ", fbx_object)
+    #
+
 def loadAObjMeshFromCfg():    
     cfgJson = sysRenderingCfg.configObj
     if "resource" in cfgJson:
@@ -77,6 +87,27 @@ def loadAObjMeshFromCfg():
     else:
         print("has not mesh data ...")
     return False
+
+def loadAObjMeshFromCfgAt(index):    
+    cfgJson = sysRenderingCfg.configObj
+    if "resources" in cfgJson:
+        resList = cfgJson["resources"]
+        res = resList[index]
+        modelUrls = res["models"]
+        url = modelUrls[0]
+        print("model url: ", url)
+        resType = res["type"] + ""
+        if resType == "obj":
+            loadAObjMesh(url)
+        elif resType == "fbx":
+            loadAFbxMesh(url)
+        else:
+            print("has not correct mesh data type ...")
+            return False
+        return True
+    else:
+        print("has not mesh data ...")
+    return False
     #
 # call by a thread
 def start_render():
@@ -84,8 +115,8 @@ def start_render():
     #
 def renderingCurrSceneToImg():
     
-    # rootDir = "D:/dev/webProj/"
-    rootDir = "D:/dev/webdev/"
+    rootDir = "D:/dev/webProj/"
+    # rootDir = "D:/dev/webdev/"
     # 渲染进度回调函数的设置
     bpy.app.handlers.render_write.append(render_progress)
 
@@ -107,7 +138,7 @@ def renderingCurrSceneToImg():
 
     # bpy.data.scenes["Scene"].cycles.samples = VALUE
 
-    rimg_resolution  = 1024
+    rimg_resolution  = 2048
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
@@ -151,10 +182,11 @@ def rtaskRun():
     # print("isinstance(cfgJson, dict): ", isinstance(cfgJson, dict))
     # print('"resource" in cfgJson: ', "resource" in cfgJson)
 
-    loadMeshFromCfgFlag = loadAObjMeshFromCfg()
+    # loadMeshFromCfgFlag = loadAObjMeshFromCfg()
+    loadMeshFromCfgFlag = loadAObjMeshFromCfgAt(1)
     print("loadMeshFromCfgFlag: ", loadMeshFromCfgFlag)
     if loadMeshFromCfgFlag:
-        fitToCamera()
+        # fitToCamera()
         renderingCurrSceneToImg()
     else:
         print("non-rendering ...")

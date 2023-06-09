@@ -10,6 +10,20 @@
 			"../../../models/scene01.obj"
 		]
 	},
+	"resources": [
+		{
+			"type": "obj",
+			"models": [
+				"../../../models/scene01.obj"
+			]
+		},
+		{
+			"type": "fbx",
+			"models": [
+				"../../../models/scene03.fbx"
+			]
+		}
+	],
 	"task": {
 		"taskID": 1,
 		"times": 2,
