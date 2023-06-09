@@ -22,6 +22,36 @@
 			"models": [
 				"../../../models/scene03.fbx"
 			]
+		},
+		{
+			"type": "fbx",
+			"models": [
+				"../../../models/scene01.fbx"
+			]
+		},
+		{
+			"type": "glb",
+			"models": [
+				"../../../models/scene04.glb"
+			]
+		},
+		{
+			"type": "glb",
+			"models": [
+				"../../../models/model01.glb"
+			]
+		},
+		{
+			"type": "glb",
+			"models": [
+				"../../../models/mglb02.glb"
+			]
+		},
+		{
+			"type": "glb",
+			"models": [
+				"../../../models/model04.glb"
+			]
 		}
 	],
 	"task": {

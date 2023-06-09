@@ -71,8 +71,17 @@ def loadAFbxMesh(fbx_file):
     imported_object = bpy.ops.import_scene.fbx(filepath=fbx_file)
     print("list(bpy.context.selected_objects): ", list(bpy.context.selected_objects))
     fbx_object = bpy.context.selected_objects[0]
-    # obj_object.scale = (0.1,0.1,0.1)
+    # fbx_object.scale = (0.1,0.1,0.1)
     print("fbx_object: ", fbx_object)
+    #
+    
+def loadAGlbMesh(glb_file):
+    # 加载FBX模型
+    imported_object = bpy.ops.import_scene.gltf(filepath=glb_file)
+    print("list(bpy.context.selected_objects): ", list(bpy.context.selected_objects))
+    glb_object = bpy.context.selected_objects[0]
+    # glb_object.scale = (0.01,0.01,0.01)
+    print("glb_object: ", glb_object)
     #
 
 def loadAObjMeshFromCfg():    
@@ -88,7 +97,7 @@ def loadAObjMeshFromCfg():
         print("has not mesh data ...")
     return False
 
-def loadAObjMeshFromCfgAt(index):    
+def loadMeshAtFromCfg(index):    
     cfgJson = sysRenderingCfg.configObj
     if "resources" in cfgJson:
         resList = cfgJson["resources"]
@@ -101,6 +110,8 @@ def loadAObjMeshFromCfgAt(index):
             loadAObjMesh(url)
         elif resType == "fbx":
             loadAFbxMesh(url)
+        elif resType == "glb":
+            loadAGlbMesh(url)
         else:
             print("has not correct mesh data type ...")
             return False
@@ -145,7 +156,7 @@ def renderingCurrSceneToImg():
     renderer.filepath = rootDir + "voxblender/renderingImg/renderingFromConfig.png"
     renderer.resolution_x = rimg_resolution
     renderer.resolution_y = rimg_resolution
-    bpy.context.scene.cycles.samples = 64
+    bpy.context.scene.cycles.samples = 512
     # bpy.ops.render.render(write_still=True)
     bpy.ops.render.render('INVOKE_DEFAULT', animation=False, write_still=True)
 
@@ -183,10 +194,10 @@ def rtaskRun():
     # print('"resource" in cfgJson: ', "resource" in cfgJson)
 
     # loadMeshFromCfgFlag = loadAObjMeshFromCfg()
-    loadMeshFromCfgFlag = loadAObjMeshFromCfgAt(1)
+    loadMeshFromCfgFlag = loadMeshAtFromCfg(6)
     print("loadMeshFromCfgFlag: ", loadMeshFromCfgFlag)
     if loadMeshFromCfgFlag:
-        # fitToCamera()
+        fitToCamera()
         renderingCurrSceneToImg()
     else:
         print("non-rendering ...")
