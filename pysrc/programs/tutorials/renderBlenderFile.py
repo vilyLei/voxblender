@@ -10,8 +10,8 @@ def render_scene(scene, on_render_progress):
     # bpy.app.handlers.render_write.append(on_render_progress)
     # # 渲染场景
     # bpy.ops.render.render(write_still=True)
-    rootDir = "D:/dev/webProj/"
-    # rootDir = "D:/dev/webdev/"
+    # rootDir = "D:/dev/webProj/"
+    rootDir = "D:/dev/webdev/"
     # 渲染进度回调函数的设置
     bpy.app.handlers.render_write.append(on_render_progress)
 
@@ -58,6 +58,7 @@ render_scene(scene, on_render_progress)
 #     # print("###")
 #     time.sleep(0.1)
 #     #
-# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\multiThrRenderBlenderFile.py
-# D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\multiThrRenderBlenderFile.py
-# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.obj -P .\multiThrRenderBlenderFile.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\renderBlenderFile.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\renderBlenderFile.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.obj -P .\renderBlenderFile.py
+# D:\programs\blender\blender.exe -b D:\modling\res\b4kTexGlb.blend -P .\renderBlenderFile.py
