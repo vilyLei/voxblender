@@ -13,6 +13,7 @@ box_vt0 = box[0]
 print("box_vt0: ", box_vt0)
 print("box_vt0[0]: ", box_vt0[0])
 # Local Space
+for el in box: print("box el: ", el)
 #for el in box:
 #    for v in el:
 #        print(v)
