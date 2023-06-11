@@ -25,9 +25,10 @@ def render_scene(scene, on_render_progress):
     devices = cycles_preferences.get_devices()
     print(">>> devices: ", devices)
     # 激活所有可用的GPU设备
-    # for device in devices:
-    #     if device.type == 'CUDA':  # 如果使用NVIDIA GPU，改为'OPENCL'如果使用AMD GPU
-    #         device.use = True
+    # if devices:
+    #     for device in devices:
+    #         if device.type == 'CUDA':  # 如果使用NVIDIA GPU，改为'OPENCL'如果使用AMD GPU
+    #             device.use = True
     # 设置设备类型为GPU
     scene.cycles.device = 'GPU'
 
