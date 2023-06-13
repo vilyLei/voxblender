@@ -1,16 +1,10 @@
-import sys
-import os
-import bpy
-import bmesh
-from bpy.props import BoolProperty, FloatVectorProperty
-import mathutils
-from bpy_extras import object_utils
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 
-# 下面这三句代码用于 background 运行时，能正常载入自定义python module
-dir = os.path.dirname(bpy.data.filepath)
-if not dir in sys.path:
-    sys.path.append(dir )
-    #print(sys.path)
+import bpy
+import mathutils
+import bmesh
+from bpy_extras import object_utils
 
 # from blender templates
 def add_box(width, height, depth):
@@ -44,29 +38,13 @@ def add_box(width, height, depth):
     return verts, faces
 
 
-def group_bounding_box():
-    minx, miny, minz = (999999.0,)*3
-    maxx, maxy, maxz = (-999999.0,)*3
-    location = [0.0,]*3
-    for obj in bpy.context.selected_objects:
-        for v in obj.bound_box:
-            v_world = obj.matrix_world @ mathutils.Vector((v[0],v[1],v[2]))
-
-            if v_world[0] < minx:
-                minx = v_world[0]
-            if v_world[0] > maxx:
-                maxx = v_world[0]
-
-            if v_world[1] < miny:
-                miny = v_world[1]
-            if v_world[1] > maxy:
-                maxy = v_world[1]
-
-            if v_world[2] < minz:
-                minz = v_world[2]
-            if v_world[2] > maxz:
-                maxz = v_world[2]
-
+def createBoundsFrameBox(minV, maxV):
+    minx = minV[0]
+    miny = minV[1]
+    minz = minV[2]
+    maxx = maxV[0]
+    maxy = maxV[1]
+    maxz = maxV[2]
     verts_loc, faces = add_box((maxx-minx)/2, (maxz-minz)/2, (maxy-miny)/2)
     mesh = bpy.data.meshes.new("BoundingBox")
     bm = bmesh.new()
@@ -80,6 +58,8 @@ def group_bounding_box():
 
     bm.to_mesh(mesh)
     mesh.update()
+    
+    location = [0.0,]*3
     location[0] = minx+((maxx-minx)/2)
     location[1] = miny+((maxy-miny)/2)
     location[2] = minz+((maxz-minz)/2)
@@ -88,6 +68,3 @@ def group_bounding_box():
     bbox.location = location
     bbox.display_type = 'BOUNDS'
     bbox.hide_render = True
-
-group_bounding_box()
-print("calc objs bounds")
