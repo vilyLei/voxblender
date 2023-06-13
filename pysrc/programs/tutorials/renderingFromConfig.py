@@ -149,6 +149,25 @@ def renderingCurrSceneToImg():
 
     # bpy.data.scenes["Scene"].cycles.samples = VALUE
 
+
+    # Set the background to use an environment texture
+    # bpy.context.scene.render.film_transparent = True
+    bpy.context.scene.world.use_nodes = True
+    bg_tree = bpy.context.scene.world.node_tree
+    # bg_tree.nodes is bpy.types.Nodes type
+    bg_node = bg_tree.nodes.new(type='ShaderNodeTexEnvironment')
+    # bg_node.location = (-300, 300)
+    bg_node.select = True
+    bg_tree.nodes.active = bg_node
+
+    # Load the environment texture file
+    # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
+    bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
+
+    # Connect the environment texture to the background output
+    bg_output = bg_tree.nodes['Background']
+    bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
+
     rimg_resolution  = 2048
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'

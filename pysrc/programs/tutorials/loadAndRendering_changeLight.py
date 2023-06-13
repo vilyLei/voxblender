@@ -43,7 +43,7 @@ bpy.context.scene.render.resolution_x = 512 #perhaps set resolution in code
 bpy.context.scene.render.resolution_y = 512
 
 # 等待1秒钟
-time.sleep(0.5)
+time.sleep(1)
 
 # 渲染并保存图片
 bpy.ops.render.render(write_still=True)

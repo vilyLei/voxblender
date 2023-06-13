@@ -1,6 +1,7 @@
 import bpy
 import threading
 import time
+import math
 
 def render_scene(scene, on_render_progress):
 # def render_scene(on_render_progress):
@@ -10,8 +11,8 @@ def render_scene(scene, on_render_progress):
     # bpy.app.handlers.render_write.append(on_render_progress)
     # # 渲染场景
     # bpy.ops.render.render(write_still=True)
-    # rootDir = "D:/dev/webProj/"
-    rootDir = "D:/dev/webdev/"
+    rootDir = "D:/dev/webProj/"
+    # rootDir = "D:/dev/webdev/"
     # 渲染进度回调函数的设置
     bpy.app.handlers.render_write.append(on_render_progress)
 
@@ -32,11 +33,32 @@ def render_scene(scene, on_render_progress):
     # 设置设备类型为GPU
     scene.cycles.device = 'GPU'
 
+
+
+    # Set the background to use an environment texture
+    # bpy.context.scene.render.film_transparent = True
+    bpy.context.scene.world.use_nodes = True
+    bg_tree = bpy.context.scene.world.node_tree
+    # bg_tree.nodes is bpy.types.Nodes type
+    bg_node = bg_tree.nodes.new(type='ShaderNodeTexEnvironment')
+    bg_node.location = (-300, 300)
+    bg_node.select = True
+    bg_tree.nodes.active = bg_node
+
+    # Load the environment texture file
+    # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
+    bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
+
+    # Connect the environment texture to the background output
+    bg_output = bg_tree.nodes['Background']
+    bg_output.inputs['Strength'].default_value = 0.5
+    bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
+
     rimg_resolution  = 4096
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
-    renderer.filepath = rootDir + "voxblender/renderingImg/multiThrRenderBlenderFile.png"
+    renderer.filepath = rootDir + "voxblender/renderingImg/renderBlenderFile.png"
     renderer.resolution_x = rimg_resolution
     renderer.resolution_y = rimg_resolution
     bpy.context.scene.cycles.samples = 64
