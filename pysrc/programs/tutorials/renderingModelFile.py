@@ -13,7 +13,7 @@ if not dir in sys.path:
 import meshObjScaleUtils
 
 rootDir = "D:/dev/webProj/"
-#rootDir = "D:/dev/webdev/"
+rootDir = "D:/dev/webdev/"
 
 def clearScene():    
     obj = bpy.data.objects["Cube"]
@@ -57,6 +57,7 @@ clearScene()
 modelUrl = rootDir + "voxblender/models/apple01.glb"
 modelUrl = rootDir + "voxblender/models/model01.glb"
 modelUrl = rootDir + "voxblender/models/model03.glb"
+modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
 # modelUrl = rootDir + "voxblender/models/scene03.fbx"
 # modelUrl = rootDir + "voxblender/models/scene03.glb"
 loadAGlbMesh(modelUrl)
@@ -114,7 +115,7 @@ bg_output = bg_tree.nodes['Background']
 bg_output.inputs['Strength'].default_value = 0.5
 bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
 
-    # 设置设备类型为GPU
+# 设置设备类型为GPU
 bpy.context.scene.cycles.device = 'GPU'
 bpy.context.scene.cycles.samples = 512
 
