@@ -56,8 +56,8 @@ def objsFitToCamera():
 clearScene()
 modelUrl = rootDir + "voxblender/models/apple01.glb"
 modelUrl = rootDir + "voxblender/models/model01.glb"
-modelUrl = rootDir + "voxblender/models/model03.glb"
-modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
+# modelUrl = rootDir + "voxblender/models/model03.glb"
+# modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
 # modelUrl = rootDir + "voxblender/models/scene03.fbx"
 # modelUrl = rootDir + "voxblender/models/scene03.glb"
 loadAGlbMesh(modelUrl)
@@ -119,7 +119,7 @@ bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
 bpy.context.scene.cycles.device = 'GPU'
 bpy.context.scene.cycles.samples = 512
 
-output_img_resolution = 4096
+output_img_resolution = 4096 // 2
 
 renderer = bpy.context.scene.render
 renderer.engine = 'CYCLES'
