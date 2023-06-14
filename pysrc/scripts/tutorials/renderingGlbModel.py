@@ -49,7 +49,6 @@ sceneObjects = bpy.data.objects
 mesh_objectDict = {}
 mesh_obj_names = []
 mesh_objs = []
-
 # create dict with meshes
 for m in bpy.data.meshes:
     mesh_objectDict[m.name] = []

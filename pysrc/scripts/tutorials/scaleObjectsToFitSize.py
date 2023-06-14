@@ -33,7 +33,7 @@ else:
 import meshObjScaleUtils
 
 
-def objsFitToCamera():
+def sceneObjsFitToCamera():
     # Select objects that will be rendered
     for obj in context.scene.objects:
         obj.select_set(False)
@@ -41,7 +41,7 @@ def objsFitToCamera():
         if not (obj.hide_get() or obj.hide_render):
             obj.select_set(True)
     #
-    print("objsFitToCamera ops ...")
+    print("sceneObjsFitToCamera ops ...")
     bpy.ops.view3d.camera_to_view_selected()
     #
 
@@ -84,6 +84,6 @@ boundsData = meshObjScaleUtils.getObjsBounds(mesh_obj_names, sceneObjects)
 print("boundsData: ", boundsData)
 scaleFlag = meshObjScaleUtils.uniformScaleObjs((2.0, 2.0, 2.0), mesh_obj_names, sceneObjects)
 
-objsFitToCamera()
+sceneObjsFitToCamera()
 
 print("scaleObjectsToFitSize sys end ...")
