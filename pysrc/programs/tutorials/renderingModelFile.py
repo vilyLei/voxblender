@@ -57,8 +57,8 @@ clearScene()
 modelUrl = rootDir + "voxblender/models/apple01.glb"
 modelUrl = rootDir + "voxblender/models/model01.glb"
 modelUrl = rootDir + "voxblender/models/model03.glb"
-modelUrl = rootDir + "voxblender/models/scene03.fbx"
-modelUrl = rootDir + "voxblender/models/scene03.glb"
+# modelUrl = rootDir + "voxblender/models/scene03.fbx"
+# modelUrl = rootDir + "voxblender/models/scene03.glb"
 loadAGlbMesh(modelUrl)
 # loadAFbxMesh(modelUrl)
 
@@ -91,7 +91,8 @@ print("mesh_objs: ", mesh_objs)
 
 
 # scaleFlag = meshObjScaleUtils.uniformScaleObjsByValue(0.05, mesh_obj_names, sceneObjects)
-scaleFlag = meshObjScaleUtils.uniformScaleObjs((2.0, 2.0, 2.0), mesh_obj_names, sceneObjects)
+# scaleFlag = meshObjScaleUtils.uniformScaleObjs((2.0, 2.0, 2.0), mesh_obj_names, sceneObjects)
+scaleFlag = meshObjScaleUtils.uniformScaleSceneObjs((2.0, 2.0, 2.0))
 objsFitToCamera()
 
 # Set the background to use an environment texture
@@ -117,7 +118,7 @@ bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
 bpy.context.scene.cycles.device = 'GPU'
 bpy.context.scene.cycles.samples = 512
 
-output_img_resolution = 1024
+output_img_resolution = 4096
 
 renderer = bpy.context.scene.render
 renderer.engine = 'CYCLES'
