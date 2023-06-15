@@ -1,0 +1,29 @@
+{
+	"renderer-proc": "./renderer.exe",
+	"renderer-instance": {
+		"name": "high-image-renderer",
+		"status": "stop"
+	},
+	"resource": {
+		"type": "glb",
+		"models": [
+			"apple01.glb"
+		]
+	},
+	"resources": [
+		{
+			"type": "glb",
+			"env": "street.hdr",
+			"models": [
+				"apple01.glb"
+			]
+		}
+	],
+	"task": {
+		"bgTransparent": true,
+		"taskID": 1,
+		"times": 2,
+		"outputPath": "apple01.png",
+		"outputResolution": [256, 256]
+	}
+}
