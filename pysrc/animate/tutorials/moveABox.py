@@ -8,11 +8,11 @@ def update_scene(sc):
     global cube
     if cube is not None:
         pos = cube.location
-        pos.x += cubeSpeed
+        pos.z += cubeSpeed
         cube.location = pos
-        if pos.x >= 2.0 and cubeSpeed > 0.0:
+        if pos.z >= 2.0 and cubeSpeed > 0.0:
             cubeSpeed *= -1.0
-        elif pos.x <= -2.0 and cubeSpeed < 0.0:
+        elif pos.z <= -2.0 and cubeSpeed < 0.0:
             cubeSpeed *= -1.0
         ################
         rot = cube.rotation_euler
