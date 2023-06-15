@@ -1,0 +1,29 @@
+{
+	"renderer-proc": "./renderer.exe",
+	"renderer-instance": {
+		"name": "high-image-renderer",
+		"status": "stop"
+	},
+	"resource": {
+		"type": "glb",
+		"env": "street.hdr",
+		"models": [
+			"coffeemat.glb"
+		]
+	},
+	"resources": [
+		{
+			"type": "glb",
+			"env": "street.hdr",
+			"models": [
+				"coffeemat.glb"
+			]
+		}
+	],
+	"task": {
+		"taskID": 1,
+		"times": 2,
+		"outputPath": "coffeemat.png",
+		"outputResolution": [1024, 1024]
+	}
+}
