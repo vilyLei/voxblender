@@ -1,0 +1,29 @@
+{
+	"renderer-proc": "./renderer.exe",
+	"renderer-instance": {
+		"name": "high-image-renderer",
+		"status": "stop"
+	},
+	"resource": {
+		"type": "glb",
+		"env": "street.hdr",
+		"models": [
+			"boomBox.glb"
+		]
+	},
+	"resources": [
+		{
+			"type": "glb",
+			"env": "street.hdr",
+			"models": [
+				"boomBox.glb"
+			]
+		}
+	],
+	"task": {
+		"taskID": 1,
+		"times": 2,
+		"outputPath": "boomBox.png",
+		"outputResolution": [2048, 2048]
+	}
+}
