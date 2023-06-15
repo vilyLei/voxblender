@@ -1,0 +1,336 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# import os
+# import time
+import sys
+import json
+import bpy
+from bpy import context
+import mathutils
+
+# # 下面这三句代码用于 background 运行时，能正常载入自定义python module
+# dir = os.path.dirname(bpy.data.filepath)
+# if not dir in sys.path:
+#     sys.path.append(dir )
+#     # print(sys.path)
+
+# import meshObjScaleUtils
+
+
+def getJsonObjFromFile(path):
+    file = open(path,'rb')
+    jsonDataStr = file.read()
+    print("jsonDataStr: \n", jsonDataStr)
+    jsonObj = json.loads(jsonDataStr)
+    return jsonObj
+
+class RenderingCfg:
+    name = ""
+    rootDir = ""
+    configPath = ""
+    configObj = {}
+    outputPath = ""
+    outputResolution = [1024, 1024]
+    bgTransparent = False
+    def __init__(self, root_path):
+        self.rootDir = root_path
+        #
+    def setRootDir(self, dir):
+        self.rootDir = dir
+        #
+    def getConfigData(self):
+        print("getConfigData() init ...")
+        self.configPath = self.rootDir + "config.json"
+        self.configObj = getJsonObjFromFile(self.configPath)
+        cfg = self.configObj
+        taskObj = cfg["task"]
+        self.outputPath = self.rootDir + taskObj["outputPath"]
+        
+        if "bgTransparent" in taskObj:
+            self.bgTransparent = taskObj["bgTransparent"]
+        if "outputResolution" in taskObj:
+            self.outputResolution = taskObj["outputResolution"]
+
+        print("getConfigData() self.configObj: ", self.configObj)
+        #
+
+sysRenderingCfg = RenderingCfg("")
+
+def getSceneObjsBounds():
+    print("getObjsBounds() init ...")
+    
+    minx, miny, minz = (999999.0,) * 3
+    maxx, maxy, maxz = (-999999.0,) * 3
+    mesh_objectDict = {}
+    # create dict with meshes
+    for m in bpy.data.meshes:
+            mesh_objectDict[m.name] = []
+    
+    # sizeValue = 0
+    # attach objects to dict keys
+    for obj in bpy.context.scene.objects:
+        # only for meshes
+        if obj.type == 'MESH':
+            # if this mesh exists in the dict
+            if obj.data.name in mesh_objectDict:
+                # print("getSceneObjsBounds() list(obj.bound_box[0]): ", list(obj.bound_box[0]), obj.dimensions)
+                for v in obj.bound_box:
+                    v_world = obj.matrix_world @ mathutils.Vector((v[0],v[1],v[2]))
+
+                    if v_world[0] < minx:
+                        minx = v_world[0]
+                    if v_world[0] > maxx:
+                        maxx = v_world[0]
+
+                    if v_world[1] < miny:
+                        miny = v_world[1]
+                    if v_world[1] > maxy:
+                        maxy = v_world[1]
+
+                    if v_world[2] < minz:
+                        minz = v_world[2]
+                    if v_world[2] > maxz:
+                        maxz = v_world[2]
+    
+    # for obj in meshObjs:
+    #     # print("mesh obj: ", obj)
+    #     print("mesh list(obj.bound_box[0]): ", list(obj.bound_box[0]), obj.dimensions)        
+
+    minV = (minx, miny, minz)
+    maxV = (maxx, maxy, maxz)
+    width = maxV[0] - minV[0]
+    height = maxV[1] - minV[1]
+    long = maxV[2] - minV[2]
+    # print("minV: ", minV)
+    # print("maxV: ", maxV)
+    # print("width: ", width)
+    # print("height: ", height)
+    # print("long: ", long)
+    print("getObjsBounds() end ...")
+
+    # for debug
+    # boundsUtils.createBoundsFrameBox(minV, maxV)
+    return (minV,  maxV, (width, height, long))
+###
+def uniformScaleSceneObjs(dstSizeV):
+    print("uniformScaleSceneObjs() init ...")
+    boundsData = getSceneObjsBounds()
+    sizeV = boundsData[2]
+    sx = dstSizeV[0] / sizeV[0]
+    sy = dstSizeV[1] / sizeV[1]
+    sz = dstSizeV[2] / sizeV[2]
+    # 等比缩放
+    sx = sy = sz = min(sx, min(sy, sz))
+
+    mesh_objectDict = {}
+    # create dict with meshes
+    for m in bpy.data.meshes:
+        mesh_objectDict[m.name] = []
+    
+    # sizeValue = 0
+    # attach objects to dict keys
+    for obj in bpy.context.scene.objects:
+        # only for meshes
+        if obj.type == 'MESH':
+            # if this mesh exists in the dict
+            if obj.data.name in mesh_objectDict:
+                location = obj.location
+                location[0] *= sx
+                location[1] *= sy
+                location[2] *= sz
+                obj.location = location
+                scale = obj.scale
+                scale[0] *= sx
+                scale[1] *= sy
+                scale[2] *= sz
+                obj.scale = scale
+                #
+    print("uniformScaleSceneObjs() end ...")
+    return True
+
+rootDir = "D:/dev/webProj/"
+# rootDir = "D:/dev/webdev/"
+
+def clearAllMeshesInScene():
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.object.select_by_type(type='MESH')
+    bpy.ops.object.delete()
+    #
+def clearScene():    
+    obj = bpy.data.objects["Cube"]
+    if obj:
+        bpy.data.objects.remove(obj)
+    else:
+        print("has not the default Cube object in the current scene.")
+################################################################################
+    
+def loadAObjMesh(obj_file):
+    # 加载OBJ模型
+    imported_object = bpy.ops.import_scene.obj(filepath=obj_file)
+    #    
+def loadAFbxMesh(fbx_file):
+    # 加载FBX模型
+    imported_object = bpy.ops.import_scene.fbx(filepath=fbx_file)
+    #    
+def loadAGlbMesh(glb_file):
+    # 加载FBX模型
+    imported_object = bpy.ops.import_scene.gltf(filepath=glb_file)
+    #
+
+def loadAObjMeshFromCfg():    
+    cfgJson = sysRenderingCfg.configObj
+    if "resource" in cfgJson:
+        res = cfgJson["resource"]
+        modelUrls = res["models"]
+        url = modelUrls[0]
+        print("model url: ", url)
+        loadAObjMesh(url)
+        return True
+    else:
+        print("has not mesh data ...")
+    return False
+
+envFilePath = ""
+def loadMeshAtFromCfg(index):   
+    global envFilePath 
+    cfgJson = sysRenderingCfg.configObj
+    url = ""
+    res = None
+    resType = ""
+    if "resources" in cfgJson:
+        resList = cfgJson["resources"]
+        res = resList[index]
+        modelUrls = res["models"]
+        url = sysRenderingCfg.rootDir + modelUrls[0]
+        print("loadMeshAtFromCfg(), A model url: ", url)
+        
+    elif "resource" in cfgJson:
+        res = cfgJson["resource"]
+        modelUrls = res["models"]
+        url = sysRenderingCfg.rootDir + modelUrls[0]
+        print("loadMeshAtFromCfg(), B model url: ", url)
+    else:
+        print("has not mesh data ...")
+        return False
+    if (res is not None) and url != "":
+        resType = res["type"] + ""
+        if "env" in res:
+            envFilePath = res["env"] + ""
+        
+        if resType == "obj":
+            loadAObjMesh(url)
+        elif resType == "fbx":
+            loadAFbxMesh(url)
+        elif resType == "glb":
+            loadAGlbMesh(url)
+        else:
+            print("has not correct mesh data type ...")
+            return False
+        return True
+    else:
+        return False
+
+def objsFitToCamera():
+    # Select objects that will be rendered
+    for obj in context.scene.objects:
+        obj.select_set(False)
+    for obj in context.visible_objects:
+        if not (obj.hide_get() or obj.hide_render):
+            obj.select_set(True)
+    #
+    print("objsFitToCamera ops ...")
+    bpy.ops.view3d.camera_to_view_selected()
+    #
+
+def load_handler(dummy):
+    print("### Load Handler:", bpy.data.filepath)
+    print("### Load dummy:", dummy)
+
+bpy.app.handlers.load_post.append(load_handler)
+
+def renderingStart():
+
+
+    global sysRenderingCfg
+    cfg = sysRenderingCfg
+    # cfg.ttf = 0
+    # print("cfg.ttf: ", cfg.ttf)
+
+    clearAllMeshesInScene()
+    loadMeshAtFromCfg(0)
+
+    scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
+    objsFitToCamera()
+
+    print("####### modelFileRendering envFilePath: ", envFilePath)
+
+    # Set the background to use an environment texture
+    bpy.context.scene.render.film_transparent = cfg.bgTransparent
+    bpy.context.scene.world.use_nodes = True
+    if envFilePath != "":
+        bg_tree = bpy.context.scene.world.node_tree
+        # bg_tree.nodes is bpy.types.Nodes type
+        bg_node = bg_tree.nodes.new(type='ShaderNodeTexEnvironment')
+        # bg_node.location = (-300, 300)
+        bg_node.select = True
+        bg_tree.nodes.active = bg_node
+        # Load the environment texture file
+        # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
+        bg_node.image = bpy.data.images.load(rootDir + 'street.hdr')
+        # Connect the environment texture to the background output
+        bg_output = bg_tree.nodes['Background']
+        bg_output.inputs['Strength'].default_value = 0.5
+        bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
+
+    # 设置设备类型为GPU
+    bpy.context.scene.cycles.device = 'GPU'
+    bpy.context.scene.cycles.samples = 512
+
+    # print("bpy.context.scene.cycles: ", bpy.context.scene.cycles)
+
+
+    # output_img_resolution = 512
+    # output_img_resolution = 4096 * 2
+
+    renderer = bpy.context.scene.render
+
+    renderer.engine = 'CYCLES'
+    renderer.threads = 8
+    # renderer.film_transparent = True
+
+    renderer.image_settings.file_format='PNG'
+    if cfg.outputPath == "":
+        renderer.filepath = rootDir + "bld_rendering.png"
+    else:
+        if "." in cfg.outputPath:
+            renderer.filepath = cfg.outputPath
+        else:
+            renderer.filepath = cfg.outputPath + "bld_rendering.png"
+    
+    renderer.resolution_x = cfg.outputResolution[0]
+    renderer.resolution_y = cfg.outputResolution[1]
+    bpy.ops.render.render(write_still=True)
+
+if __name__ == "__main__":
+    argv = sys.argv
+    # print("modelFileRendering argv: \n", argv)
+    print("modelFileRendering init ...")
+    try:
+        if "--" in argv:
+            argv = argv[argv.index("--") + 1:]
+            # print("sub0 argv: \n", argv)
+            if len(argv) > 0:
+                rootDir = argv[0].split("=")[1]
+                sysRenderingCfg.setRootDir(rootDir)
+                sysRenderingCfg.getConfigData()
+                print("rootDir: ", rootDir)            
+                renderingStart()
+                i = 0
+        else:
+            argv = []
+    except Exception as e:
+        print("Error: rendering task has a error.")
+    # ### for test
+    # renderingStart()
+    print("####### modelFileRendering end ...")
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/

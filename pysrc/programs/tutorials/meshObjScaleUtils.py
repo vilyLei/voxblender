@@ -142,7 +142,7 @@ def getSceneObjsBounds():
         if obj.type == 'MESH':
             # if this mesh exists in the dict
             if obj.data.name in mesh_objectDict:
-                print("getSceneObjsBounds() list(obj.bound_box[0]): ", list(obj.bound_box[0]), obj.dimensions)
+                # print("getSceneObjsBounds() list(obj.bound_box[0]): ", list(obj.bound_box[0]), obj.dimensions)
                 for v in obj.bound_box:
                     v_world = obj.matrix_world @ mathutils.Vector((v[0],v[1],v[2]))
 
@@ -170,11 +170,11 @@ def getSceneObjsBounds():
     width = maxV[0] - minV[0]
     height = maxV[1] - minV[1]
     long = maxV[2] - minV[2]
-    print("minV: ", minV)
-    print("maxV: ", maxV)
-    print("width: ", width)
-    print("height: ", height)
-    print("long: ", long)
+    # print("minV: ", minV)
+    # print("maxV: ", maxV)
+    # print("width: ", width)
+    # print("height: ", height)
+    # print("long: ", long)
     print("getObjsBounds() end ...")
 
     # for debug

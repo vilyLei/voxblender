@@ -1,0 +1,97 @@
+Blender 3.5.1 (hash e1ccd9d4a1d3 built 2023-04-24 23:56:35)
+Read prefs: C:\Users\gongyingshang\AppData\Roaming\Blender Foundation\Blender\3.5\config\userpref.blend
+Error: Python: Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "D:\dev\webProj\voxblender\pysrc\programs\tutorials\.\renderingModelFile.py", line 138, in <module>
+    bpy.app.handlers.render_progress.append(render_progress)
+AttributeError: 'bpy.app.handlers' object has no attribute 'render_progress'
+Fra:1 Mem:79.61M (Peak 119.54M) | Time:00:00.39 | Syncing Light
+Fra:1 Mem:79.61M (Peak 119.54M) | Time:00:00.39 | Syncing Camera
+Fra:1 Mem:79.62M (Peak 119.54M) | Time:00:00.39 | Syncing apple_Sphere_009
+Fra:1 Mem:80.35M (Peak 119.54M) | Time:00:00.40 | Syncing stem_Cylinder
+Fra:1 Mem:80.17M (Peak 119.54M) | Time:00:00.40 | Rendering 1 / 64 samples
+Fra:1 Mem:79.75M (Peak 119.54M) | Time:00:00.45 | Rendering 26 / 64 samples
+Fra:1 Mem:79.75M (Peak 119.54M) | Time:00:00.48 | Rendering 51 / 64 samples
+Fra:1 Mem:79.75M (Peak 119.54M) | Time:00:00.49 | Rendering 64 / 64 samples
+Saved: 'C:\tmp\0001.png'
+ Time: 00:00.86 (Saving: 00:00.35)
+
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Light
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Camera
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing apple_Sphere_009
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing stem_Cylinder
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Rendering 1 / 64 samples
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.04 | Rendering 26 / 64 samples
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.07 | Rendering 51 / 64 samples
+Fra:2 Mem:79.75M (Peak 148.29M) | Time:00:00.08 | Rendering 64 / 64 samples
+Saved: 'C:\tmp\0002.png'
+ Time: 00:00.24 (Saving: 00:00.14)
+
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Light
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Camera
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing apple_Sphere_009
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing stem_Cylinder
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Rendering 1 / 64 samples
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.04 | Rendering 26 / 64 samples
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.07 | Rendering 51 / 64 samples
+Fra:3 Mem:79.75M (Peak 148.29M) | Time:00:00.08 | Rendering 64 / 64 samples
+Saved: 'C:\tmp\0003.png'
+ Time: 00:00.23 (Saving: 00:00.14)
+
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Light
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Camera
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing apple_Sphere_009
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing stem_Cylinder
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Rendering 1 / 64 samples
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.04 | Rendering 26 / 64 samples
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.07 | Rendering 51 / 64 samples
+Fra:4 Mem:79.75M (Peak 148.29M) | Time:00:00.08 | Rendering 64 / 64 samples
+Saved: 'C:\tmp\0004.png'
+ Time: 00:00.23 (Saving: 00:00.14)
+
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Light
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Camera
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing apple_Sphere_009
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing stem_Cylinder
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Rendering 1 / 64 samples
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.04 | Rendering 26 / 64 samples
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.07 | Rendering 51 / 64 samples
+Fra:5 Mem:79.75M (Peak 148.29M) | Time:00:00.08 | Rendering 64 / 64 samples
+Saved: 'C:\tmp\0005.png'
+ Time: 00:00.24 (Saving: 00:00.14)
+
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Light
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing Camera
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing apple_Sphere_009
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Syncing stem_Cylinder
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.00 | Rendering 1 / 64 samples
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.04 | Rendering 26 / 64 samples
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.07 | Rendering 51 / 64 samples
+Fra:6 Mem:79.75M (Peak 148.29M) | Time:00:00.08 | Rendering 64 / 64 samples
+
+Sent an internal break event. Press ^C again to kill Blender
+Saved: 'C:\tmp\0006.png'
+ Time: 00:00.23 (Saving: 00:00.14)
+
+['D:\\programs\\blender\\3.5\\scripts\\startup', 'D:\\programs\\blender\\3.5\\scripts\\modules', 'D:\\programs\\blender\\python310.zip', 'D:\\programs\\blender\\3.5\\python\\DLLs', 'D:\\programs\\blender\\3.5\\python\\lib', 'D:\\programs\\blender\\3.5\\python\\bin', 'D:\\programs\\blender\\3.5\\python', 'D:\\programs\\blender\\3.5\\python\\lib\\site-packages', 'D:\\programs\\blender\\3.5\\scripts\\freestyle\\modules', 'D:\\programs\\blender\\3.5\\scripts\\addons\\modules', 'C:\\Users\\gongyingshang\\AppData\\Roaming\\Blender Foundation\\Blender\\3.5\\scripts\\addons\\modules', 'D:\\programs\\blender\\3.5\\scripts\\addons', 'D:\\programs\\blender\\3.5\\scripts\\addons_contrib', '']
+Data are loaded, start creating Blender stuff
+glTF import finished in 0.01s
+list(bpy.context.selected_objects):  [bpy.data.objects['apple_Sphere_009'], bpy.data.objects['stem_Cylinder']]
+glb_object:  <bpy_struct, Object("apple_Sphere_009") at 0x0000021FD753DD08>
+mesh_obj_names:  ['apple_Sphere_009', 'stem_Cylinder']
+mesh_objectDict:  {'apple_Sphere_009': [], 'Cube': [], 'stem_Cylinder': []}
+mesh_objs:  [bpy.data.objects['apple_Sphere_009'], bpy.data.objects['stem_Cylinder']]
+uniformScaleSceneObjs() init ...
+getObjsBounds() init ...
+getSceneObjsBounds() list(obj.bound_box[0]):  [-0.38787201046943665, -0.29838499426841736, -0.38301101326942444] <Vector (1.1452, 0.7815, 1.1184)>
+getSceneObjsBounds() list(obj.bound_box[0]):  [-0.10542500019073486, 0.08727899938821793, -0.045503001660108566] <Vector (0.1970, 0.4633, 0.1240)>
+minV:  (-0.5875316858291626, -0.5382295250892639, -0.4519807696342468)
+maxV:  (0.5576379299163818, 0.580168604850769, 0.5955508947372437)
+width:  1.1451696157455444
+height:  1.118398129940033
+long:  1.0475316643714905
+getObjsBounds() end ...
+uniformScaleSceneObjs() end ...
+objsFitToCamera ops ...
+
+Blender quit

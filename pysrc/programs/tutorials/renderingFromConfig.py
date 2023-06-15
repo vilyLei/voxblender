@@ -16,6 +16,7 @@ if not dir in sys.path:
     sys.path.append(dir )
     #print("sys.path: ", sys.path)
 
+import meshObjScaleUtils
 import rsystem
 import rconfig
 version = rsystem.getVersion()
@@ -179,12 +180,17 @@ def renderingCurrSceneToImg():
     # bpy.ops.render.render(write_still=True)
     bpy.ops.render.render('INVOKE_DEFAULT', animation=False, write_still=True)
 
-    # async call rendering process    
+    # async call rendering process
     # render_thread = threading.Thread(target=start_render, daemon=True)
     # render_thread.start()
     # render_thread.join()
     
 
+    #
+def clearAllMeshesInScene():
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.object.select_by_type(type='MESH')
+    bpy.ops.object.delete()
     #
 def clearScene():    
     obj = bpy.data.objects["Cube"]
@@ -216,6 +222,7 @@ def rtaskRun():
     loadMeshFromCfgFlag = loadMeshAtFromCfg(6)
     print("loadMeshFromCfgFlag: ", loadMeshFromCfgFlag)
     if loadMeshFromCfgFlag:
+        scaleFlag = meshObjScaleUtils.uniformScaleSceneObjs((2.0, 2.0, 2.0))
         fitToCamera()
         renderingCurrSceneToImg()
     else:
