@@ -1,0 +1,13 @@
+{
+"rendering-ins":"jetty-scene-renderer",
+"rendering-task":
+    {
+        "uuid":"rtrt88970-8990",
+        "taskID":1,
+        "name":"high-image-rendering",
+        "phase":"finish",
+        "progress":20,
+        "times":2
+    },
+"rendering-status":"task:running"
+}
