@@ -3,6 +3,13 @@
 import json
 import subprocess
 import sys
+import time
+
+
+now = int(round(time.time()*1000))
+currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+print("\n")
+print(currTime)
 
 blender_command = "D:\programs\\blender\\blender.exe -b -P .\\renderingModelFile.py"
 
@@ -40,7 +47,7 @@ def getJsonObjFromFile(path):
     jsonObj = json.loads(jsonDataStr)
     return jsonObj
 
-def writeErrorStatus():
+def writeErrorStatus(logInfo):
     global rconfig
     if rconfig is None:
         rconfig = getJsonObjFromFile( sys_rtaskDir + 'config.json' )
@@ -52,9 +59,12 @@ def writeErrorStatus():
     rtask["progress"] = 100
     rtask["times"] = taskObj["times"]
     rtask["taskID"] = taskObj["taskID"]
-    # 将数据写入 JSON 格式的文件
+    
     with open(sys_rtaskDir + 'renderingStatus.json', 'w') as f:
         json.dump(statusData, f)
+    ##################################################
+    with open(sys_rtaskDir + 'error_log.txt', 'w') as file:
+        file.write(logInfo)
     ##################################################
 
 def updateRenderStatus():
@@ -201,8 +211,13 @@ def renderingStart():
         elif "Blender quit" in line:
             print("## Blender quit.")
         elif "Error:" in line:
-            print("## have a Error in bcRenderShell: \n", line)
-            writeErrorStatus()
+            now = int(round(time.time()*1000))
+            currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+            errorInfo = "\n### " + currTime + ""
+            errorInfo += "\n### " + sys_rtaskDir + ""
+            errorInfo += "\n### have a Error in bcRenderShell: \n" + line
+            print(errorInfo)
+            writeErrorStatus(errorInfo)
         else:
             i = 0
 

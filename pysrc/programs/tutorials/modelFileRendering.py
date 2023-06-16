@@ -116,9 +116,22 @@ def uniformScaleSceneObjs(dstSizeV):
     print("uniformScaleSceneObjs() init ...")
     boundsData = getSceneObjsBounds()
     sizeV = boundsData[2]
-    sx = dstSizeV[0] / sizeV[0]
-    sy = dstSizeV[1] / sizeV[1]
-    sz = dstSizeV[2] / sizeV[2]
+
+    # sx = dstSizeV[0] / sizeV[0]
+    # sy = dstSizeV[1] / sizeV[1]
+
+    if sizeV[0] > 0.0001:
+        sx = dstSizeV[0] / sizeV[0]
+    else:
+        sx = 1.0
+    if sizeV[1] > 0.0001:
+        sy = dstSizeV[1] / sizeV[1]
+    else:
+        sy = 1.0
+    if sizeV[2] > 0.0001:
+        sz = dstSizeV[2] / sizeV[2]
+    else:
+        sz = 1.0
     # 等比缩放
     sx = sy = sz = min(sx, min(sy, sz))
 
@@ -297,15 +310,25 @@ def renderingStart():
     renderer.engine = 'CYCLES'
     renderer.threads = 8
     # renderer.film_transparent = True
-
-    renderer.image_settings.file_format='PNG'
-    if cfg.outputPath == "":
-        renderer.filepath = rootDir + "bld_rendering.png"
-    else:
-        if "." in cfg.outputPath:
-            renderer.filepath = cfg.outputPath
+    if cfg.bgTransparent:
+        renderer.image_settings.file_format='PNG'
+        if cfg.outputPath == "":
+            renderer.filepath = rootDir + "bld_rendering.png"
         else:
-            renderer.filepath = cfg.outputPath + "bld_rendering.png"
+            if "." in cfg.outputPath:
+                renderer.filepath = cfg.outputPath
+            else:
+                renderer.filepath = cfg.outputPath + "bld_rendering.png"
+    else:
+        renderer.image_settings.file_format='JPEG'
+        if cfg.outputPath == "":
+            renderer.filepath = rootDir + "bld_rendering.jpg"
+        else:
+            if "." in cfg.outputPath:
+                renderer.filepath = cfg.outputPath
+            else:
+                renderer.filepath = cfg.outputPath + "bld_rendering.jpg"
+    #################################################################################
     
     renderer.resolution_x = cfg.outputResolution[0]
     renderer.resolution_y = cfg.outputResolution[1]
@@ -329,7 +352,7 @@ if __name__ == "__main__":
         else:
             argv = []
     except Exception as e:
-        print("Error: rendering task has a error.")
+        print("Error: rendering task has a error: ", e)
     # ### for test
     # renderingStart()
     print("####### modelFileRendering end ...")
