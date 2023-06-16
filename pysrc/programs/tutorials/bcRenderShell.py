@@ -160,6 +160,10 @@ def renderingStart():
 
     for line in iter(process.stdout.readline, ""):
         print(line, end="")
+        # try:
+        #     print(line, end="")
+        # except Exception as e:
+        #     print("Error: print(line, end='')")
         if "Fra:" in line:
             if " Denoising" in line:
                 print("## denoising.")
