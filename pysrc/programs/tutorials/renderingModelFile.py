@@ -13,7 +13,7 @@ if not dir in sys.path:
 import meshObjScaleUtils
 
 rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
+rootDir = "D:/dev/webdev/"
 
 def clearAllMeshesInScene():
     bpy.ops.object.select_all(action='DESELECT')
@@ -71,7 +71,7 @@ bpy.app.handlers.load_post.append(load_handler)
 # clearScene()
 clearAllMeshesInScene()
 modelUrl = rootDir + "voxblender/models/apple01.glb"
-modelUrl = rootDir + "voxblender/models/model01.glb"
+# modelUrl = rootDir + "voxblender/models/model01.glb"
 # modelUrl = rootDir + "voxblender/models/model03.glb"
 # modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
 # modelUrl = rootDir + "voxblender/models/scene03.fbx"
@@ -124,7 +124,11 @@ bg_tree.nodes.active = bg_node
 
 # Load the environment texture file
 # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
-bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
+# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
+# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/stinsonBeach.hdr')
+# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/sky_cloudy.hdr')
+# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/memorial.hdr')
+bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/cool_white.hdr')
 
 # Connect the environment texture to the background output
 bg_output = bg_tree.nodes['Background']
@@ -138,7 +142,7 @@ bpy.context.scene.cycles.samples = 512
 # print("bpy.context.scene.cycles: ", bpy.context.scene.cycles)
 
 
-output_img_resolution = 4096 // 2
+output_img_resolution = 4096 // 4
 # output_img_resolution = 4096 * 2
 
 # 定义渲染进度回调函数
