@@ -124,11 +124,11 @@ bg_tree.nodes.active = bg_node
 
 # Load the environment texture file
 # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
-# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
+bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/street.hdr')
 # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/stinsonBeach.hdr')
 # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/sky_cloudy.hdr')
 # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/memorial.hdr')
-bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/cool_white.hdr')
+# bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/cool_white.hdr')
 
 # Connect the environment texture to the background output
 bg_output = bg_tree.nodes['Background']

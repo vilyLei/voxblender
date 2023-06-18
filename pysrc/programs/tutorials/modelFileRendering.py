@@ -26,6 +26,7 @@ def getJsonObjFromFile(path):
 
 class RenderingCfg:
     name = ""
+    taskRootDir = ""
     rootDir = ""
     configPath = ""
     configObj = {}
@@ -33,24 +34,30 @@ class RenderingCfg:
     outputResolution = [1024, 1024]
     bgTransparent = False
     def __init__(self, root_path):
-        self.rootDir = root_path
+        self.taskRootDir = root_path
         #
     def setRootDir(self, dir):
+        self.taskRootDir = dir
         self.rootDir = dir
         #
     def getConfigData(self):
         print("getConfigData() init ...")
-        self.configPath = self.rootDir + "config.json"
+        self.configPath = self.taskRootDir + "config.json"
         self.configObj = getJsonObjFromFile(self.configPath)
         cfg = self.configObj
         taskObj = cfg["task"]
-        self.outputPath = self.rootDir + taskObj["outputPath"]
+        self.outputPath = self.taskRootDir + taskObj["outputPath"]
         
         if "bgTransparent" in taskObj:
             self.bgTransparent = taskObj["bgTransparent"]
         if "outputResolution" in taskObj:
             self.outputResolution = taskObj["outputResolution"]
-
+        ### get sys info
+        if "sys" in cfg:
+            sysObj = cfg["sys"]
+            self.rootDir = sysObj["rootDir"]
+            print("self.rootDir: ", self.rootDir)
+            #
         print("getConfigData() self.configObj: ", self.configObj)
         #
 
@@ -161,8 +168,8 @@ def uniformScaleSceneObjs(dstSizeV):
     print("uniformScaleSceneObjs() end ...")
     return True
 
-rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
+taskRootDir = "D:/dev/webProj/"
+# taskRootDir = "D:/dev/webdev/"
 
 def clearAllMeshesInScene():
     bpy.ops.object.select_all(action='DESELECT')
@@ -214,13 +221,13 @@ def loadMeshAtFromCfg(index):
         resList = cfgJson["resources"]
         res = resList[index]
         modelUrls = res["models"]
-        url = sysRenderingCfg.rootDir + modelUrls[0]
+        url = sysRenderingCfg.taskRootDir + modelUrls[0]
         print("loadMeshAtFromCfg(), A model url: ", url)
         
     elif "resource" in cfgJson:
         res = cfgJson["resource"]
         modelUrls = res["models"]
-        url = sysRenderingCfg.rootDir + modelUrls[0]
+        url = sysRenderingCfg.taskRootDir + modelUrls[0]
         print("loadMeshAtFromCfg(), B model url: ", url)
     else:
         print("has not mesh data ...")
@@ -288,8 +295,8 @@ def renderingStart():
         bg_node.select = True
         bg_tree.nodes.active = bg_node
         # Load the environment texture file
-        # bg_node.image = bpy.data.images.load(rootDir + 'voxblender/models/box.jpg')
-        bg_node.image = bpy.data.images.load(rootDir + 'street.hdr')
+        # bg_node.image = bpy.data.images.load(taskRootDir + 'voxblender/models/box.jpg')
+        bg_node.image = bpy.data.images.load(taskRootDir + 'street.hdr')
         # Connect the environment texture to the background output
         bg_output = bg_tree.nodes['Background']
         bg_output.inputs['Strength'].default_value = 0.5
@@ -313,7 +320,7 @@ def renderingStart():
     if cfg.bgTransparent:
         renderer.image_settings.file_format='PNG'
         if cfg.outputPath == "":
-            renderer.filepath = rootDir + "bld_rendering.png"
+            renderer.filepath = taskRootDir + "bld_rendering.png"
         else:
             if "." in cfg.outputPath:
                 renderer.filepath = cfg.outputPath
@@ -322,7 +329,7 @@ def renderingStart():
     else:
         renderer.image_settings.file_format='JPEG'
         if cfg.outputPath == "":
-            renderer.filepath = rootDir + "bld_rendering.jpg"
+            renderer.filepath = taskRootDir + "bld_rendering.jpg"
         else:
             if "." in cfg.outputPath:
                 renderer.filepath = cfg.outputPath
@@ -343,10 +350,10 @@ if __name__ == "__main__":
             argv = argv[argv.index("--") + 1:]
             # print("sub0 argv: \n", argv)
             if len(argv) > 0:
-                rootDir = argv[0].split("=")[1]
-                sysRenderingCfg.setRootDir(rootDir)
+                taskRootDir = argv[0].split("=")[1]
+                sysRenderingCfg.setRootDir(taskRootDir)
                 sysRenderingCfg.getConfigData()
-                print("rootDir: ", rootDir)            
+                print("taskRootDir: ", taskRootDir)            
                 renderingStart()
                 i = 0
         else:
