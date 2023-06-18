@@ -56,7 +56,7 @@ class RenderingCfg:
         if "sys" in cfg:
             sysObj = cfg["sys"]
             self.rootDir = sysObj["rootDir"]
-            print("self.rootDir: ", self.rootDir)
+            print("### self.rootDir: ", self.rootDir)
             #
         print("getConfigData() self.configObj: ", self.configObj)
         #
@@ -212,7 +212,8 @@ def loadAObjMeshFromCfg():
 
 envFilePath = ""
 def loadMeshAtFromCfg(index):   
-    global envFilePath 
+    global envFilePath
+    global sysRenderingCfg
     cfgJson = sysRenderingCfg.configObj
     url = ""
     res = None
@@ -272,6 +273,7 @@ def renderingStart():
 
 
     global sysRenderingCfg
+    global envFilePath
     cfg = sysRenderingCfg
     # cfg.ttf = 0
     # print("cfg.ttf: ", cfg.ttf)
@@ -287,7 +289,16 @@ def renderingStart():
     # Set the background to use an environment texture
     bpy.context.scene.render.film_transparent = cfg.bgTransparent
     bpy.context.scene.world.use_nodes = True
-    if envFilePath != "":
+
+    envHdrFilePath = ""
+    if envFilePath == "":
+        print("### cfg.rootDir: ", cfg.rootDir)
+        envHdrFilePath = cfg.rootDir + "static/common/env/default.hdr"
+        print("### envFilePath: ", envFilePath)
+    else:
+        envHdrFilePath = taskRootDir + 'street.hdr'
+
+    if envHdrFilePath != "":
         bg_tree = bpy.context.scene.world.node_tree
         # bg_tree.nodes is bpy.types.Nodes type
         bg_node = bg_tree.nodes.new(type='ShaderNodeTexEnvironment')
@@ -296,7 +307,7 @@ def renderingStart():
         bg_tree.nodes.active = bg_node
         # Load the environment texture file
         # bg_node.image = bpy.data.images.load(taskRootDir + 'voxblender/models/box.jpg')
-        bg_node.image = bpy.data.images.load(taskRootDir + 'street.hdr')
+        bg_node.image = bpy.data.images.load(envHdrFilePath)
         # Connect the environment texture to the background output
         bg_output = bg_tree.nodes['Background']
         bg_output.inputs['Strength'].default_value = 0.5
@@ -364,3 +375,4 @@ if __name__ == "__main__":
     # renderingStart()
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webdev/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/
