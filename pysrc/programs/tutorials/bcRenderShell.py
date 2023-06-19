@@ -16,7 +16,8 @@ blender_command = "D:\programs\\blender\\blender.exe -b -P .\\renderingModelFile
 tilesTotal = 1
 tilesIndex = 0
 r_progress = 0.0
-dis_rprogress = 75.0
+dis_rprogress = 65.0
+base_rprogress = 20.0
 preTileSNList = [0 ,0,0]
 sys_rendererExePath = ""
 sys_renderingModulePath = ""
@@ -116,6 +117,7 @@ def getRTileProgress(line):
     global preTileSNList
     global r_progress
     global dis_rprogress
+    global base_rprogress
     tfactors = getRTileProgressInfo(line)
     sample_factors = getRSampleProgressInfo( line )
     if preTileSNList[1] == tfactors[1] and preTileSNList[2] == tfactors[2]:
@@ -123,9 +125,9 @@ def getRTileProgress(line):
         k0 = (tfactors[1] * tstot  + sample_factors[1])
         k1 = (tfactors[2] * tstot)
         factor = k0/k1
-        pro = round(factor * dis_rprogress) + 10
+        pro = round(factor * dis_rprogress) + base_rprogress
         if pro > r_progress:
-            r_progress = pro            
+            r_progress = pro
             print("###> rendering progress: ", r_progress, "%")
             updateRenderStatus()
         # print("#### tile rending, sample info: ", k0, k1, factor, round(factor * dis_rprogress), dis_rprogress)
@@ -156,14 +158,14 @@ def renderingStart():
     # return
     global r_progress
     global dis_rprogress
-    process = subprocess.Popen(blender_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+    global base_rprogress
+    # process = subprocess.Popen(blender_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+    process = subprocess.Popen(blender_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False, universal_newlines=True)
 
     for line in iter(process.stdout.readline, ""):
         print(line, end="")
-        # try:
-        #     print(line, end="")
-        # except Exception as e:
-        #     print("Error: print(line, end='')")
+        # print(line.encode('utf-8'), end="")
+        # print(line.encode('gbk'), end="")
         if "Fra:" in line:
             if " Denoising" in line:
                 print("## denoising.")
@@ -180,32 +182,43 @@ def renderingStart():
                 # print("## tile rendering.")
             elif " Sample" in line:
                 sample_factor = getRSampleProgressInfo( line )[0]
-                r_progress = round(sample_factor * dis_rprogress) + 10
-                updateRenderStatus()
+                rpro = round(sample_factor * dis_rprogress) + base_rprogress
+                if r_progress < rpro:
+                    r_progress = rpro                
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
-            elif " ViewLayer | Initializing" in line:
+            elif " Model load begin" in line:
                 if r_progress < 1:
                     r_progress = 1                
-                updateRenderStatus()
+                    updateRenderStatus()
+            elif " Model load end" in line:
+                if r_progress < 6:
+                    r_progress = 6                
+                    updateRenderStatus()
+            elif " ViewLayer | Initializing" in line:
+                if r_progress < 7:
+                    r_progress = 7                
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
             elif " ViewLayer | Updating Images" in line:
-                if r_progress < 2:
-                    r_progress = 2                
-                updateRenderStatus()
+                if r_progress < 8:
+                    r_progress = 8
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
             elif " ViewLayer | Updating Objects" in line:
-                if r_progress < 3:
-                    r_progress = 3
+                if r_progress < 9:
+                    r_progress = 9                    
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
             elif " ViewLayer | Updating Scene BVH" in line:
-                if r_progress < 5:
-                    r_progress = 5                
-                updateRenderStatus()
+                if r_progress < 11:
+                    r_progress = 11                
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
             elif " ViewLayer | Updating Device" in line:
-                if r_progress < 8:
-                    r_progress = 8                
-                updateRenderStatus()
+                if r_progress < 17:
+                    r_progress = 17                
+                    updateRenderStatus()
                 print("## rendering progress: ", r_progress, "%")
         elif "(Saving:" in line:
             r_progress = 100
@@ -256,4 +269,4 @@ if __name__ == "__main__":
 # D:/dev/webProj/voxblender/models/model01/
 # python .\bcRenderShell.py
 # python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:/programs/blender/blender.exe rmodule=D:/dev/webProj/voxblender/pysrc/programs/tutorials/modelFileRendering.py rtaskDir=D:/dev/webProj/voxblender/models/model01/
-# python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:\\programs\\blender\\blender.exe rmodule=D:\\dev\\webProj\\voxblender\\pysrc\\programs\\tutorials\\modelFileRendering.py rtaskDir=D:/dev/webProj/voxblender/models/model01/
+# python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:\\programs\\blender\\blender.exe rmodule=D:\\dev\\webProj\\voxblender\\pysrc\\programs\\tutorials\\modelFileRendering.py rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/

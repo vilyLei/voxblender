@@ -58,7 +58,7 @@ class RenderingCfg:
             self.rootDir = sysObj["rootDir"]
             print("### self.rootDir: ", self.rootDir)
             #
-        print("getConfigData() self.configObj: ", self.configObj)
+        # print("getConfigData() self.configObj: ", self.configObj)
         #
 
 sysRenderingCfg = RenderingCfg("")
@@ -229,7 +229,7 @@ def loadMeshAtFromCfg(index):
         res = cfgJson["resource"]
         modelUrls = res["models"]
         url = sysRenderingCfg.taskRootDir + modelUrls[0]
-        print("loadMeshAtFromCfg(), B model url: ", url)
+        # print("loadMeshAtFromCfg(), B model url: ", url)
     else:
         print("has not mesh data ...")
         return False
@@ -237,7 +237,8 @@ def loadMeshAtFromCfg(index):
         resType = res["type"] + ""
         if "env" in res:
             envFilePath = res["env"] + ""
-        
+        print("Fra:1 Model load begin ...")
+        sys.stdout.flush()
         if resType == "obj":
             loadAObjMesh(url)
         elif resType == "fbx":
@@ -247,6 +248,9 @@ def loadMeshAtFromCfg(index):
         else:
             print("has not correct mesh data type ...")
             return False
+        
+        print("Fra:1 Model load end ...")
+        sys.stdout.flush()
         return True
     else:
         return False
@@ -353,9 +357,13 @@ def renderingStart():
     bpy.ops.render.render(write_still=True)
 
 if __name__ == "__main__":
+    # sys.stdout.write("modelFileRendering ######################### ...\n")
+    print("Fra:1 modelFileRendering ######################### ...")
+    print("Fra:1 modelFileRendering init ...")
+    sys.stdout.flush()
     argv = sys.argv
     # print("modelFileRendering argv: \n", argv)
-    print("modelFileRendering init ...")
+    # sys.stdout.write("modelFileRendering init ...\n")
     try:
         if "--" in argv:
             argv = argv[argv.index("--") + 1:]
@@ -375,4 +383,4 @@ if __name__ == "__main__":
     # renderingStart()
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
-# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webdev/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/
