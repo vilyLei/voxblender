@@ -191,10 +191,14 @@ def loadAObjMesh(obj_file):
 def loadAFbxMesh(fbx_file):
     # 加载FBX模型
     imported_object = bpy.ops.import_scene.fbx(filepath=fbx_file)
-    #    
+    #
 def loadAGlbMesh(glb_file):
-    # 加载FBX模型
+    # 加载glb模型
     imported_object = bpy.ops.import_scene.gltf(filepath=glb_file)
+    #
+def loadAUsdMesh(glb_file):
+    # 加载usd模型
+    imported_object = bpy.ops.import_scene.usd(filepath=glb_file)
     #
 
 def loadAObjMeshFromCfg():    
@@ -245,6 +249,10 @@ def loadMeshAtFromCfg(index):
             loadAFbxMesh(url)
         elif resType == "glb":
             loadAGlbMesh(url)
+        elif resType == "usdc":
+            loadAUsdMesh(url)
+        elif resType == "usdz":
+            loadAUsdMesh(url)
         else:
             print("has not correct mesh data type ...")
             return False
@@ -383,4 +391,4 @@ if __name__ == "__main__":
     # renderingStart()
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
-# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/

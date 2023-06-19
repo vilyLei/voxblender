@@ -16,8 +16,8 @@ blender_command = "D:\programs\\blender\\blender.exe -b -P .\\renderingModelFile
 tilesTotal = 1
 tilesIndex = 0
 r_progress = 0.0
-dis_rprogress = 65.0
-base_rprogress = 20.0
+dis_rprogress = 65
+base_rprogress = 20
 preTileSNList = [0 ,0,0]
 sys_rendererExePath = ""
 sys_renderingModulePath = ""
@@ -170,8 +170,8 @@ def renderingStart():
             if " Denoising" in line:
                 print("## denoising.")
                 r_progress = 95
-                print("## rendering progress: ", r_progress, "%")
                 updateRenderStatus()
+                print("## rendering progress: ", r_progress, "%")
             elif " Finished" in line:
                 print("## rendering Finished.")
                 r_progress = 90
@@ -191,10 +191,12 @@ def renderingStart():
                 if r_progress < 1:
                     r_progress = 1                
                     updateRenderStatus()
+                print("## rendering progress: ", r_progress, "%")
             elif " Model load end" in line:
                 if r_progress < 6:
                     r_progress = 6                
                     updateRenderStatus()
+                print("## rendering progress: ", r_progress, "%")
             elif " ViewLayer | Initializing" in line:
                 if r_progress < 7:
                     r_progress = 7                
