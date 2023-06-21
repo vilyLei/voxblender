@@ -196,9 +196,9 @@ def loadAGlbMesh(glb_file):
     # 加载glb模型
     imported_object = bpy.ops.import_scene.gltf(filepath=glb_file)
     #
-def loadAUsdMesh(glb_file):
+def loadAUsdMesh(usd_file):
     # 加载usd模型
-    imported_object = bpy.ops.import_scene.usd(filepath=glb_file)
+    imported_object = bpy.ops.wm.usd_import(filepath=usd_file)
     #
 
 def loadAObjMeshFromCfg():    

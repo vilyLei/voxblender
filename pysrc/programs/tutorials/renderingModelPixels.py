@@ -1,3 +1,6 @@
+import bgl
+import gpu
+import numpy as np
 import os
 import sys
 import time
@@ -161,7 +164,7 @@ bpy.context.scene.cycles.samples = 512
 
 
 output_img_resolution = 4096 // 4
-# output_img_resolution = 256
+output_img_resolution = 64
 # output_img_resolution = 4096 * 2
 
 # 定义渲染进度回调函数
@@ -210,7 +213,7 @@ renderer.engine = 'CYCLES'
 renderer.threads = 8
 # renderer.film_transparent = True
 renderer.image_settings.file_format='PNG'
-renderer.filepath = rootDir + "voxblender/renderingImg/renderingModelFile.png"
+renderer.filepath = rootDir + "voxblender/renderingImg/renderingModelPixels.png"
 #https://docs.blender.org/api/current/bpy.types.RenderEngine.html
 renderer.resolution_x = output_img_resolution
 renderer.resolution_y = output_img_resolution
@@ -219,14 +222,31 @@ print("### renderer.pixel_aspect_x: ", renderer.pixel_aspect_x)
 print("### renderer.pixel_aspect_y: ", renderer.pixel_aspect_y)
 renderer.pixel_aspect_x = 1.0
 renderer.pixel_aspect_y = 1.0
-bpy.ops.render.render(write_still=True)
-# bpy.ops.render.render(write_still=False)
+# bpy.ops.render.render(write_still=True)
+bpy.ops.render.render(write_still=False)
 
-# 等待渲染完成
-# render_job = bpy.context.scene.render
-# print("A Render progress: ", render_job.progress, "%")
-# while render_job.is_rendering:
-#     progress = render_job.progress
-#     print("B Render progress: ", progress, "%")
 
-# D:\programs\blender\blender.exe -b -P .\renderingModelFile.py
+# Find render result
+render_result = next(image for image in bpy.data.images if image.type == "RENDER_RESULT")
+
+# Create a GPU texture that shares GPU memory with Blender
+gpu_tex = gpu.texture.from_image(render_result)
+
+# Read image from GPU
+gpu_tex.read()
+
+# OR read image into a NumPy array (might be more convenient for later operations)
+fbo = gpu.types.GPUFrameBuffer(color_slots=(gpu_tex,))
+
+buffer_np = np.empty(gpu_tex.width * gpu_tex.height * 4, dtype=np.float32)
+buffer = bgl.Buffer(bgl.GL_FLOAT, buffer_np.shape, buffer_np)
+with fbo.bind():
+    bgl.glReadBuffer(bgl.GL_BACK)
+    bgl.glReadPixels(0, 0, gpu_tex.width, gpu_tex.height, bgl.GL_RGBA, bgl.GL_FLOAT, buffer)
+
+# Now the NumPy array has the pixel data, you can reshape it and/or export it as bytes if you wish
+print("buffer_np: ")
+print(buffer_np)
+
+
+# D:\programs\blender\blender.exe -b -P .\renderingModelPixels.py
