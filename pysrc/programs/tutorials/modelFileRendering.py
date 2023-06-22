@@ -392,3 +392,4 @@ if __name__ == "__main__":
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webdev/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
