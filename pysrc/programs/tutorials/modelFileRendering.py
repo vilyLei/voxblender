@@ -73,19 +73,36 @@ sysRenderingCfg = RenderingCfg("")
 
 def updateCamWithCfg(cfg):
     taskObj = cfg.configObj["task"]
-    cdvs = taskObj["camdvs"]
-    print("updateCamWithCfg(), cdvs: ", cdvs)
-    cdvsList = toTuplesByStep4(cdvs)
-    cam_world_matrix = Matrix()
-    cam_world_matrix[0] = cdvsList[0]
-    cam_world_matrix[1] = cdvsList[1]
-    cam_world_matrix[2] = cdvsList[2]
-    cam_world_matrix[3] = cdvsList[3]
+    if "camdvs" in taskObj:
+        cdvs = taskObj["camdvs"]
+        if len(cdvs) != 16:
+            return False
+        print("updateCamWithCfg(), cdvs: ", cdvs)
+        cdvsList = toTuplesByStep4(cdvs)
 
+        px = cdvsList[0][3]
+        py = cdvsList[1][3]
+        pz = cdvsList[2][3]
 
-    camera_object = bpy.data.objects["Camera"]
-    camera_object.matrix_world = cam_world_matrix
+        dis = px * px + py * py + pz * pz
+        if(dis > 0.01):
+            cam_world_matrix = Matrix()
+            cam_world_matrix[0] = cdvsList[0]
+            cam_world_matrix[1] = cdvsList[1]
+            cam_world_matrix[2] = cdvsList[2]
+            cam_world_matrix[3] = cdvsList[3]
+
+            camera_object = bpy.data.objects["Camera"]
+            camera_object.matrix_world = cam_world_matrix
+            
+            # Set camera field of view
+            camera_object.data.angle = 45
+            camera_object.data.clip_start = 0.1
+            camera_object.data.clip_end = 20.0
+            return True
+            #
     #
+    return False
 
 def getSceneObjsBounds():
     print("getObjsBounds() init ...")
@@ -239,6 +256,43 @@ def loadAObjMeshFromCfg():
     return False
 
 envFilePath = ""
+# isBlendModelFile = False
+
+def isBlendModelFile(index):
+
+    global sysRenderingCfg
+    cfgJson = sysRenderingCfg.configObj
+    url = ""
+    res = None
+    resType = ""
+    if "resources" in cfgJson:
+        resList = cfgJson["resources"]
+        res = resList[index]
+        modelUrls = res["models"]
+        url = modelUrls[0]
+        
+    elif "resource" in cfgJson:
+        res = cfgJson["resource"]
+        modelUrls = res["models"]
+        url = modelUrls[0]
+        # print("loadMeshAtFromCfg(), B model url: ", url)
+    else:
+        # print("has not mesh data ...")
+        return False
+    if (res is not None) and url != "":
+        resType = res["type"] + ""
+        # print("Fra:1 Model load begin ...")
+        # sys.stdout.flush()
+        if resType == "blend":
+            return True
+        
+        # print("Fra:1 Model load end ...")
+        # sys.stdout.flush()
+        return False
+    else:
+        return False
+    ################################################
+
 def loadMeshAtFromCfg(index):   
     global envFilePath
     global sysRenderingCfg
@@ -307,20 +361,21 @@ bpy.app.handlers.load_post.append(load_handler)
 
 def renderingStart():
 
-
     global sysRenderingCfg
     global envFilePath
     cfg = sysRenderingCfg
     # cfg.ttf = 0
     # print("cfg.ttf: ", cfg.ttf)
-
-    clearAllMeshesInScene()
-    loadMeshAtFromCfg(0)
+    if not isBlendModelFile(0):
+        clearAllMeshesInScene()
+        loadMeshAtFromCfg(0)
 
     scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
-    objsFitToCamera()
+    
+    if not updateCamWithCfg(cfg):
+        print("####### size auto fit camera ...")
+        objsFitToCamera()
 
-    updateCamWithCfg(cfg)
     print("####### modelFileRendering envFilePath: ", envFilePath)
     # time.sleep(3.0)
 
@@ -406,7 +461,7 @@ if __name__ == "__main__":
                 taskRootDir = argv[0].split("=")[1]
                 sysRenderingCfg.setRootDir(taskRootDir)
                 sysRenderingCfg.getConfigData()
-                print("taskRootDir: ", taskRootDir)            
+                print("taskRootDir: ", taskRootDir)
                 renderingStart()
                 i = 0
         else:
@@ -419,3 +474,4 @@ if __name__ == "__main__":
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
+# D:\programs\blender\blender.exe -b D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2003/scene01.blend -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2003/

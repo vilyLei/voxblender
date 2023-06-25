@@ -11,6 +11,8 @@ currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
 print("\n")
 print(currTime)
 
+isBlendModelFile = False
+blendFileUrl = ""
 blender_command = "D:\programs\\blender\\blender.exe -b -P .\\renderingModelFile.py"
 
 tilesTotal = 1
@@ -22,6 +24,7 @@ preTileSNList = [0 ,0,0]
 sys_rendererExePath = ""
 sys_renderingModulePath = ""
 sys_rtaskDir = ""
+
 
 rootDir = "D:/dev/webProj/"
 # rootDir = "D:/dev/webdev/"
@@ -78,9 +81,10 @@ def updateRenderStatus():
     rtask = statusData["rendering-task"]
     if rconfig is None:
         rconfig = getJsonObjFromFile( sys_rtaskDir + 'config.json' )
-        taskObj = rconfig["task"]
-        rtask["times"] = taskObj["times"]
-        rtask["taskID"] = taskObj["taskID"]
+        ###    
+    taskObj = rconfig["task"]
+    rtask["times"] = taskObj["times"]
+    rtask["taskID"] = taskObj["taskID"]
     rtask["progress"] = r_progress
     if r_progress >= 100:
         rtask["phase"] = "finish"
@@ -152,8 +156,16 @@ def renderingStart():
     params = " -- dir=none"
     if sys_rtaskDir != "":
         params = " -- dir=" + sys_rtaskDir
-    
-    blender_command = rendererExePath + " -b -P " + renderingModulePath + params
+    # D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\renderBlenderFile.py
+    # isBlendModelFile = False
+    # blender_command = "D:\programs\\blender\\blender.exe -b -P .\\renderingModelFile.py"
+    if isBlendModelFile:
+        blender_command = rendererExePath + " -b "+ blendFileUrl +" -P " + renderingModulePath + params
+        ###
+    else:
+        blender_command = rendererExePath + " -b -P " + renderingModulePath + params
+        ###
+    print("isBlendModelFile:",isBlendModelFile)
     print("blender_command:\n",blender_command)
     # return
     global r_progress
@@ -244,6 +256,39 @@ def renderingStart():
     process.wait()
     #
 
+def initCfg():
+    global isBlendModelFile
+    global blendFileUrl
+    global rconfig
+    if rconfig is None:
+        rconfig = getJsonObjFromFile( sys_rtaskDir + 'config.json' )
+    ###
+    url = ""
+    res = None
+    index = 0
+    if "resources" in rconfig:
+        resList = rconfig["resources"]
+        if len(resList) > 0:
+            res = resList[index]
+            modelUrls = res["models"]
+            url = sys_rtaskDir + modelUrls[0]
+        print("initCfg(), A model url: ", url)
+        
+    elif "resource" in rconfig:
+        res = rconfig["resource"]
+        modelUrls = res["models"]
+        url = sys_rtaskDir + modelUrls[0]
+        print("initCfg(), B model url: ", url)
+    else:
+        print("has not model data ...")
+        return False
+    if (res is not None) and url != "":
+        resType = res["type"] + ""
+        isBlendModelFile = resType.lower() == "blend"
+        blendFileUrl = url
+    print("##### isBlendModelFile: ", isBlendModelFile)
+    return True
+
 if __name__ == "__main__":
     argv = sys.argv
     # print("argv: \n", argv)
@@ -257,6 +302,7 @@ if __name__ == "__main__":
             sys_rtaskDir = argv[2].split("=")[1]
             # print("sys_rendererExePath: ", sys_rendererExePath)
             # print("sys_renderingModulePath: ", sys_renderingModulePath)
+            initCfg()
             renderingStart()
             i = 0
     else:
@@ -271,4 +317,4 @@ if __name__ == "__main__":
 # D:/dev/webProj/voxblender/models/model01/
 # python .\bcRenderShell.py
 # python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:/programs/blender/blender.exe rmodule=D:/dev/webProj/voxblender/pysrc/programs/tutorials/modelFileRendering.py rtaskDir=D:/dev/webProj/voxblender/models/model01/
-# python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:\\programs\\blender\\blender.exe rmodule=D:\\dev\\webProj\\voxblender\\pysrc\\programs\\tutorials\\modelFileRendering.py rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/modelRTask2002/
+# python D:\dev\webProj\voxblender\pysrc\programs\tutorials\bcRenderShell.py -- renderer=D:\\programs\\blender\\blender.exe rmodule=D:\\dev\\webProj\\voxblender\\pysrc\\programs\\tutorials\\modelFileRendering.py rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2002/
