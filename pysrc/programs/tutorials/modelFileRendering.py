@@ -57,7 +57,8 @@ class RenderingCfg:
         self.outputPath = self.taskRootDir + taskObj["outputPath"]
         
         if "bgTransparent" in taskObj:
-            self.bgTransparent = taskObj["bgTransparent"]
+            self.bgTransparent = taskObj["bgTransparent"] == 1
+            print("XXXXXXX self.bgTransparent: ", self.bgTransparent)
         if "outputResolution" in taskObj:
             self.outputResolution = taskObj["outputResolution"]
         ### get sys info
@@ -376,7 +377,7 @@ def renderingStart():
         print("####### size auto fit camera ...")
         objsFitToCamera()
 
-    print("####### modelFileRendering envFilePath: ", envFilePath)
+    print("####### modelFileRendering envFilePath: ", envFilePath, ", cfg.bgTransparent: ", cfg.bgTransparent)
     # time.sleep(3.0)
 
     # Set the background to use an environment texture
@@ -472,6 +473,6 @@ if __name__ == "__main__":
     # renderingStart()
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
-# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webdev/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
 # D:\programs\blender\blender.exe -b D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2003/scene01.blend -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2003/
