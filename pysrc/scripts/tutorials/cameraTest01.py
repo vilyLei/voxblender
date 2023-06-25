@@ -36,6 +36,7 @@ cam_world_matrix[2] = cdvsList[2]
 cam_world_matrix[3] = cdvsList[3]
 
 
+camera_object = bpy.data.objects["Camera"]
 camera_object.matrix_world = cam_world_matrix
 
 

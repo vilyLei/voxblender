@@ -5,8 +5,10 @@
 import sys
 import json
 import bpy
+import time
 from bpy import context
 import mathutils
+from mathutils import Matrix
 
 # # 下面这三句代码用于 background 运行时，能正常载入自定义python module
 # dir = os.path.dirname(bpy.data.filepath)
@@ -16,6 +18,12 @@ import mathutils
 
 # import meshObjScaleUtils
 
+
+def toTuplesByStep4(datals):
+    ds = tuple(datals)
+    n = 4
+    rds = tuple(ds[i:i + n] for i in range(0, len(ds), n))
+    return rds
 
 def getJsonObjFromFile(path):
     file = open(path,'rb')
@@ -62,6 +70,22 @@ class RenderingCfg:
         #
 
 sysRenderingCfg = RenderingCfg("")
+
+def updateCamWithCfg(cfg):
+    taskObj = cfg.configObj["task"]
+    cdvs = taskObj["camdvs"]
+    print("updateCamWithCfg(), cdvs: ", cdvs)
+    cdvsList = toTuplesByStep4(cdvs)
+    cam_world_matrix = Matrix()
+    cam_world_matrix[0] = cdvsList[0]
+    cam_world_matrix[1] = cdvsList[1]
+    cam_world_matrix[2] = cdvsList[2]
+    cam_world_matrix[3] = cdvsList[3]
+
+
+    camera_object = bpy.data.objects["Camera"]
+    camera_object.matrix_world = cam_world_matrix
+    #
 
 def getSceneObjsBounds():
     print("getObjsBounds() init ...")
@@ -296,7 +320,9 @@ def renderingStart():
     scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
     objsFitToCamera()
 
+    updateCamWithCfg(cfg)
     print("####### modelFileRendering envFilePath: ", envFilePath)
+    # time.sleep(3.0)
 
     # Set the background to use an environment texture
     bpy.context.scene.render.film_transparent = cfg.bgTransparent
@@ -392,4 +418,4 @@ if __name__ == "__main__":
     print("####### modelFileRendering end ...")
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/voxblender/models/model01/
 # D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
-# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webdev/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
+# D:\programs\blender\blender.exe -b -P .\modelFileRendering.py -- rtaskDir=D:/dev/webProj/minirsvr/src/renderingsvr/static/sceneres/v1ModelRTask2001/
