@@ -175,17 +175,22 @@ modelUrl = rootDir + "voxblender/models/apple01.usdc"
 # modelUrl = rootDir + "voxblender/models/model01.glb"
 # modelUrl = rootDir + "voxblender/models/model03.glb"
 # modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
-modelUrl = rootDir + "voxblender/models/scene03.fbx"
+# modelUrl = rootDir + "voxblender/models/scene03.fbx"
+modelUrl = rootDir + "voxblender/models/scene01.fbx"
 # modelUrl = rootDir + "voxblender/models/scene03.glb"
-modelUrl = rootDir + "voxblender/models/scene01.obj"
+# modelUrl = rootDir + "voxblender/models/scene01.obj"
 loadModelWithUrl(modelUrl)
 
-scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
+# scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
 print("#### ### #### ### ### ### ### ### ### ### ###")
-getSceneObjsBounds()
+# getSceneObjsBounds()
 
 blend_file_path = bpy.data.filepath
 directory = os.path.dirname(blend_file_path)
-target_file = os.path.join(directory, 'test.obj')
+# target_file = os.path.join(directory, '../../private/obj/export_test01.obj')
+target_file = rootDir + 'voxblender/private/obj/export_test01.obj'
 
 bpy.ops.export_scene.obj(filepath=target_file)
+
+print("exportObjTest exec finish ...")
+# D:\programs\blender\blender.exe -b -P .\exportObjTest.py
