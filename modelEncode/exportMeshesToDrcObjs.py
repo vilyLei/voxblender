@@ -120,15 +120,22 @@ modelFilePath = "export_0.obj"
 
 def exportObjs():
     global modelFilePath
-    clearAllMeshesInScene()
+    fileInfos = os.path.splitext(modelFilePath)
+    # print("fileInfos: ", fileInfos)
+    suffix = fileInfos[1][1:]
+    suffix = suffix.lower()
+    
     modelFilePath = modelFilePath.replace("\\","/")
     modelFilePath = modelFilePath.replace("//","/")
     index = modelFilePath.rindex("/")
     fileDir = modelFilePath[0:index+1] + "dracoObj/"
     print("exportMeshesToDrcObjs::exportObjs(), modelFilePath: ", modelFilePath)
     print("exportMeshesToDrcObjs::exportObjs(), fileDir: ", fileDir)
-    # return
-    loadModelWithUrl(modelFilePath)
+    if suffix == "blend" or suffix == "bld":
+        print("#### ### it is a blend proj file.")
+    else:
+        clearAllMeshesInScene()
+        loadModelWithUrl(modelFilePath)
 
     # scaleFlag = uniformScaleSceneObjs((2.0, 2.0, 2.0))
     print("#### ### #### ### ### ### ### ### ### ### ###")
@@ -141,10 +148,10 @@ def exportObjs():
     
     exportAMeshPerObj( fileDir )
 
-def encodeStart():
-    global encoderPath
-    print("encodeStart() init ...")
-    ###
+# def encodeStart():
+#     global encoderPath
+#     print("encodeStart() init ...")
+#     ###
 if __name__ == "__main__":
     argv = sys.argv
     # print("argv: \n", argv)
@@ -153,12 +160,9 @@ if __name__ == "__main__":
         argv = argv[argv.index("--") + 1:]
         # print("sub0 argv: \n", argv)
         if len(argv) > 0:            
-            # encoderPath = argv[0].split("=")[1]
             modelFilePath = argv[0].split("=")[1]
-            # sys_renderingModulePath = argv[1].split("=")[1]
-            # sys_rtaskDir = argv[2].split("=")[1]
             exportObjs()
-            encodeStart()
+            # encodeStart()
             
     else:
         argv = []

@@ -364,8 +364,7 @@ def renderingStart():
     global sysRenderingCfg
     global envFilePath
     cfg = sysRenderingCfg
-    # cfg.ttf = 0
-    # print("cfg.ttf: ", cfg.ttf)
+    
     if not isBlendModelFile(0):
         clearAllMeshesInScene()
         loadMeshAtFromCfg(0)
