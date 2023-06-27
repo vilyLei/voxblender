@@ -283,7 +283,7 @@ def isBlendModelFile(index):
         resType = res["type"] + ""
         # print("Fra:1 Model load begin ...")
         # sys.stdout.flush()
-        if resType == "blend":
+        if resType == "blend" or resType == "bld":
             return True
         
         # print("Fra:1 Model load end ...")

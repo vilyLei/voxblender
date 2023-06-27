@@ -284,7 +284,8 @@ def initCfg():
         return False
     if (res is not None) and url != "":
         resType = res["type"] + ""
-        isBlendModelFile = resType.lower() == "blend"
+        suffix = resType.lower()
+        isBlendModelFile = suffix == "blend" or suffix == "bld"
         blendFileUrl = url
     print("##### isBlendModelFile: ", isBlendModelFile)
     return True
