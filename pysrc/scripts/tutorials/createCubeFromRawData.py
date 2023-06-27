@@ -4,16 +4,9 @@ import struct
 
 
 
-def toTuplesByStep3(datals):
+def toTuplesByStepN(datals, stepN = 4):
     ds = tuple(datals)
-    n = 3
-    rds = tuple(ds[i:i + n] for i in range(0, len(ds), n))
-    return rds
-
-def toTuplesByStep2(datals):
-    ds = tuple(datals)
-    n = 2
-    rds = tuple(ds[i:i + n] for i in range(0, len(ds), n))
+    rds = tuple(ds[i:i + stepN] for i in range(0, len(ds), stepN))
     return rds
 
 def toFloat32List(dataStr):
@@ -47,28 +40,42 @@ def toUint32List(dataStr):
     return data
 
 
+def clearAllMeshesInScene():
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.object.select_by_type(type='MESH')
+    bpy.ops.object.delete()
+    #
+def clearRawIScene():    
+    obj = bpy.data.objects["Cube"]
+    if obj:
+        bpy.data.objects.remove(obj)
+    else:
+        print("has not the default Cube object in the current scene.")
+clearAllMeshesInScene()
 ################################
 rootDir = "D:/dev/webProj/"
 #rootDir = "D:/dev/webdev/"
 
+
+
 file_vs = open(rootDir + 'voxblender/models/verticesBox.bin','rb')
 dataStr_vs = file_vs.read()
-data_vs = list(toTuplesByStep3(toFloat32List(dataStr_vs)))
+data_vs = list(toTuplesByStepN(toFloat32List(dataStr_vs), 3))
 print("data_vs:\n", data_vs)
 file_ivs = open(rootDir + 'voxblender/models/indicesBox.bin','rb')
 dataStr_ivs = file_ivs.read()
-data_ivs = list(toTuplesByStep3(toUint16List(dataStr_ivs)))
+data_ivs = list(toTuplesByStepN(toUint16List(dataStr_ivs), 3))
 print("data_ivs:\n", data_ivs)
 
 file_uvs = open(rootDir + 'voxblender/models/uvBox.bin','rb')
 dataStr_uvs = file_uvs.read()
-data_uvs = list(toTuplesByStep2(toFloat32List(dataStr_uvs)))
+data_uvs = list(toTuplesByStepN(toFloat32List(dataStr_uvs), 2))
 print("data_uvs:\n", data_uvs)
 
 
 file_nvs = open(rootDir + 'voxblender/models/normalBox.bin','rb')
 dataStr_nvs = file_nvs.read()
-data_nvs = list(toTuplesByStep3(toFloat32List(dataStr_nvs)))
+data_nvs = list(toTuplesByStepN(toFloat32List(dataStr_nvs), 3))
 print("data_nvs:\n", data_nvs)
 
 # 顶点数据

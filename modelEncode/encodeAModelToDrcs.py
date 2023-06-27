@@ -4,18 +4,33 @@ import subprocess
 import sys
 import time
 import os
+import json
 
 rootDir = "D:/dev/webProj/"
 # rootDir = "D:/dev/webdev/"
 
 encoderPath = "draco_encoder.exe"
 modelFilePath = "export_0.obj"
+modelFileDir = "./"
 
+exportPyPath = ".\\exportMeshesToDrcObjs.py"
+
+statusData = {
+    "rins":"encoder",
+    "phase":"finish"
+}
+
+def writeStatusFile():
+    with open(modelFileDir + 'draco/status.json', 'w') as f:
+        json.dump(statusData, f)
+    ###
 def exportObjs():
     global modelFilePath
+    global exportPyPath
     print("####### encodeStart call end ...")
+    # D:\dev\webProj\voxblender\modelEncode\exportMeshesToDrcObjs.py
     # D:\programs\blender\blender.exe -b -P .\exportMeshesToDrcObjs.py -- modelFilePath=scene01\scene01.fbx
-    encode_command = "D:\\programs\\blender\\blender.exe -b -P .\\exportMeshesToDrcObjs.py -- modelFilePath="+modelFilePath
+    encode_command = "D:\\programs\\blender\\blender.exe -b -P " + exportPyPath + " -- modelFilePath="+modelFilePath
     print("encode_command: ", encode_command)
     # return
     process = subprocess.Popen(encode_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False, universal_newlines=True)
@@ -42,9 +57,9 @@ def encodeAObjFile(filePath, savingDir):
     print("encode_command: ", encode_command)
     # return
     process = subprocess.Popen(encode_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False, universal_newlines=True)
-    # for line in iter(process.stdout.readline, ""):
-    #     print(line, end="")
-    # process.stdout.close()
+    for line in iter(process.stdout.readline, ""):
+        print(line, end="")
+    process.stdout.close()
     process.wait()
     print("####### encodeAModelToDrcs::encodeStart() call end ...")
 
@@ -54,35 +69,36 @@ def findAllObjFile(dirPath):
             yield f
     #######
 def encodeStart():
+    global modelFileDir
     global modelFilePath
     mfPath = modelFilePath.replace("\\","/")
     mfPath = mfPath.replace("//","/")
     index = mfPath.rindex("/")
-    mfDir = mfPath[0:index+1]
-    objsDir = mfDir + "dracoObj/"
-    savingDir = mfDir + "draco/"
+    modelFileDir = mfPath[0:index+1]
+    objsDir = modelFileDir + "dracoObj/"
+    savingDir = modelFileDir + "draco/"
     
     print("encodeAModelToDrcs::encodeStart(), mfPath: ", mfPath)
-    print("encodeAModelToDrcs::encodeStart(), mfDir: ", mfDir)
+    print("encodeAModelToDrcs::encodeStart(), modelFileDir: ", modelFileDir)
     print("encodeAModelToDrcs::encodeStart(), objsDir: ", objsDir)
     print("encodeAModelToDrcs::encodeStart(), savingDir: ", savingDir)
     
-    if not os.path.exists(savingDir):
+    if os.path.exists(savingDir):
+        for file in findAllObjFile(savingDir):
+            filePath = savingDir + file
+            print("remove a file: ", filePath)
+            os.remove(filePath)
+    else:
         os.makedirs(savingDir)
     # total = 0
+    # return
     fileNames = []
     for file in findAllObjFile(objsDir):
-        print("file A: ", file)
         fileNames.append(objsDir + file)
-        # encodeAObjFile(objsDir + file, savingDir)
-        # total += 1
-        # if total > 1:
-        #     break
     
     for i in range(0, len(fileNames)):
-        print("file B: ", fileNames[i])
         encodeAObjFile(fileNames[i], savingDir)
-
+    ###
 
 if __name__ == "__main__":
     argv = sys.argv
@@ -93,14 +109,17 @@ if __name__ == "__main__":
         # print("sub0 argv: \n", argv)
         if len(argv) > 1:            
             encoderPath = argv[0].split("=")[1]
-            modelFilePath = argv[1].split("=")[1]
+            exportPyPath = argv[1].split("=")[1]
+            modelFilePath = argv[2].split("=")[1]
             exportObjs()
             encodeStart()
+            writeStatusFile()
             
     else:
         argv = []
     # ###
     print("####### encodeAModelToDrcs end ...")
-    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe modelFilePath=private\scene01\scene01.fbx
-    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe modelFilePath=private\scene03\scene03.fbx
-    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe modelFilePath=private\model02\model02.glb
+    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe exportPy=D:\dev\webProj\voxblender\modelEncode\exportMeshesToDrcObjs.py modelFilePath=private\scene01\scene01.fbx
+    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe exportPy=D:\dev\webProj\voxblender\modelEncode\exportMeshesToDrcObjs.py modelFilePath=private\scene03\scene03.fbx
+    # python D:\dev\webProj\voxblender\modelEncode\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe exportPy=D:\dev\webProj\voxblender\modelEncode\exportMeshesToDrcObjs.py modelFilePath=D:\dev\webProj\voxblender\modelEncode\private\scene03\scene03.fbx
+    # python .\encodeAModelToDrcs.py -- encoder=D:\dev\webProj\voxblender\modelEncode\draco_encoder.exe exportPy=D:\dev\webProj\voxblender\modelEncode\exportMeshesToDrcObjs.py modelFilePath=private\model02\model02.glb

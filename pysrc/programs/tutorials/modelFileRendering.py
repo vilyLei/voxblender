@@ -19,10 +19,9 @@ from mathutils import Matrix
 # import meshObjScaleUtils
 
 
-def toTuplesByStep4(datals):
+def toTuplesByStepN(datals, stepN = 4):
     ds = tuple(datals)
-    n = 4
-    rds = tuple(ds[i:i + n] for i in range(0, len(ds), n))
+    rds = tuple(ds[i:i + stepN] for i in range(0, len(ds), stepN))
     return rds
 
 def getJsonObjFromFile(path):
@@ -79,7 +78,7 @@ def updateCamWithCfg(cfg):
         if len(cdvs) != 16:
             return False
         print("updateCamWithCfg(), cdvs: ", cdvs)
-        cdvsList = toTuplesByStep4(cdvs)
+        cdvsList = toTuplesByStepN(cdvs)
 
         px = cdvsList[0][3]
         py = cdvsList[1][3]
@@ -218,7 +217,7 @@ def clearAllMeshesInScene():
     bpy.ops.object.select_by_type(type='MESH')
     bpy.ops.object.delete()
     #
-def clearScene():    
+def clearRawIScene():    
     obj = bpy.data.objects["Cube"]
     if obj:
         bpy.data.objects.remove(obj)
