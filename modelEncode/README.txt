@@ -1,5 +1,7 @@
 
-draco_encoder.exe -i export_0.ply -o export_0.drc
+draco_encoder.exe -i export_0.obj -o export_0.drc
+
+draco_encoder.exe -i export_5.obj -o export_5.drc
 
 draco_encoder.exe -i export_0.ply -o export_0.drc -cl 10
 
