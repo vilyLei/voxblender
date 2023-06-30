@@ -20,7 +20,7 @@ print("camera_object: ", camera_object)
 print("camera_object.matrix_world: ", camera_object.matrix_world)
 
 cdvs = (-0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 5.000000476837158, 0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 5.000000476837158, 0, 0.8164965510368347, 0.5773502588272095, 5.000000476837158, -0, 0, -0, 1)
-cdvs = (-0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 8, 0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 8, 0, 0.8164965510368347, 0.5773502588272095, 8, -0, 0, -0, 1)
+cdvs = (0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, -0, 0, -0, 1)
 
 def toTuplesByStep4(datals):
     ds = tuple(datals)
@@ -44,8 +44,9 @@ print("cam_world_matrix: ", cam_world_matrix)
 print("cam_world_matrix[0]: ", cam_world_matrix[0])
 
 # Set camera field of view
-camera_object.data.angle = 45
+camera_object.data.lens = 50
+camera_object.data.angle = 0.5 * 3.14159065 * 45.0/180.0
 camera_object.data.clip_start = 0.1
-camera_object.data.clip_end = 100.0
+camera_object.data.clip_end = 20.0
 
 print("proc end ...")
