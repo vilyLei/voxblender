@@ -13,5 +13,5 @@ directory = os.path.dirname(blend_file_path)
 directory = ""
 target_file = os.path.join(directory, "D:/dev/webdev/voxblender/renderingImg/export_glb.glb")
 
-bpy.ops.export_scene.gltf(filepath=target_file, export_lights=True)
+bpy.ops.export_scene.gltf(filepath=target_file, export_lights=True, export_cameras=True)
 print("export proc end.")
