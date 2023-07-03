@@ -9,6 +9,7 @@ def directToTarget(obj, target):
     return constraint
 
 meshT = bpy.ops.mesh
+# meshT.primitive_cube_add(size=2,location=(0,0,0))
 meshT.primitive_cube_add(size=2,location=(0,0,0))
 cube = bpy.context.active_object
 meshT.primitive_plane_add(size=5)
@@ -42,8 +43,8 @@ matNode.inputs['Metallic'].default_value = 1.0
 matNode.inputs['Base Color'].default_value = (0.8,0.3,0.0,1.0)
 
 
-rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
+# rootDir = "D:/dev/webProj/"
+rootDir = "D:/dev/webdev/"
 
 # thanks: https://blenderartists.org/t/assign-image-texture-for-material-in-script/1392848/3
 
@@ -65,3 +66,9 @@ node_roughness_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbr
 # LINK NODES
 links = mat.node_tree.links
 link = links.new(node_roughness_tex.outputs[0], matNode.inputs["Roughness"])
+
+node_metallic_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
+node_metallic_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/metallic.jpg')
+# LINK NODES
+links = mat.node_tree.links
+link = links.new(node_metallic_tex.outputs[0], matNode.inputs["Metallic"])
