@@ -403,15 +403,21 @@ def renderingStart():
         bg_node.image = bpy.data.images.load(envHdrFilePath)
         # Connect the environment texture to the background output
         bg_output = bg_tree.nodes['Background']
-        bg_output.inputs['Strength'].default_value = 0.5
+        inputsMap = bg_output.inputs
+        inputsMap['Strength'].default_value = 0.5
+        # print('inputsMap["Weight"].default_value: ', inputsMap["Weight"].default_value)
+        # inputsMap["Weight"].default_value = 10.5
+        for key in inputsMap:
+            # print("XXX inputsMap "+key+': ',inputsMap[key])
+            print("XXX inputsMap key: ",key)
+
         bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
 
     # 设置设备类型为GPU
     bpy.context.scene.cycles.device = 'GPU'
-    bpy.context.scene.cycles.samples = 512
+    bpy.context.scene.cycles.samples = 128
 
     # print("bpy.context.scene.cycles: ", bpy.context.scene.cycles)
-
 
     # output_img_resolution = 512
     # output_img_resolution = 4096 * 2
@@ -453,21 +459,21 @@ if __name__ == "__main__":
     argv = sys.argv
     # print("modelFileRendering argv: \n", argv)
     # sys.stdout.write("modelFileRendering init ...\n")
-    try:
-        if "--" in argv:
-            argv = argv[argv.index("--") + 1:]
-            # print("sub0 argv: \n", argv)
-            if len(argv) > 0:
-                taskRootDir = argv[0].split("=")[1]
-                sysRenderingCfg.setRootDir(taskRootDir)
-                sysRenderingCfg.getConfigData()
-                print("taskRootDir: ", taskRootDir)
-                renderingStart()
-                i = 0
-        else:
-            argv = []
-    except Exception as e:
-        print("Error: rendering task has a error: ", e)
+    # try:
+    if "--" in argv:
+        argv = argv[argv.index("--") + 1:]
+        # print("sub0 argv: \n", argv)
+        if len(argv) > 0:
+            taskRootDir = argv[0].split("=")[1]
+            sysRenderingCfg.setRootDir(taskRootDir)
+            sysRenderingCfg.getConfigData()
+            print("taskRootDir: ", taskRootDir)
+            renderingStart()
+            i = 0
+    else:
+        argv = []
+    # except Exception as e:
+    #     print("Error: rendering task has a error: ", e)
     # ### for test
     # renderingStart()
     print("####### modelFileRendering end ...")
