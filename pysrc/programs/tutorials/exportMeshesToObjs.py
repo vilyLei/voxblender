@@ -55,10 +55,13 @@ def exportAMeshPerObj(savingDir):
                 # obj.select_set(True)
                 viewlayer.objects.active = obj
                 obj.select_set(True)
-                filePath = savingDir + "export_" + str(index) + ".obj"
+                # filePath = savingDir + "export_" + str(index) + ".obj"
+                filePath = savingDir + obj.data.name + ".obj"
                 index += 1
+                print("obj.data.name: ", obj.data.name)
                 # bpy.ops.export_scene.obj(filepath=filePath, use_selection = True, use_materials=False, use_triangles=True)
-                bpy.ops.export_scene.obj(filepath=filePath, use_selection = True)
+                # bpy.ops.export_scene.obj(filepath=filePath, use_selection = True)
+                bpy.ops.export_scene.obj(filepath=filePath, use_selection = True, use_materials=False)
                 obj.hide_set(False)
                 obj.select_set(False)
                 # break
@@ -116,13 +119,14 @@ def loadModelWithUrl(url):
 
 clearAllMeshesInScene()
 modelUrl = rootDir + "voxblender/models/apple01.glb"
-modelUrl = rootDir + "voxblender/models/apple01.usdc"
+modelUrl = rootDir + "voxblender/models/apple02.glb"
+# modelUrl = rootDir + "voxblender/models/apple01.usdc"
 # modelUrl = rootDir + "voxblender/models/model01.usdz"
 # modelUrl = rootDir + "voxblender/models/model01.glb"
 # modelUrl = rootDir + "voxblender/models/model03.glb"
 # modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
 # modelUrl = rootDir + "voxblender/models/scene03.fbx"
-modelUrl = rootDir + "voxblender/models/scene01.fbx"
+# modelUrl = rootDir + "voxblender/models/scene01.fbx"
 # modelUrl = rootDir + "voxblender/models/scene03.glb"
 # modelUrl = rootDir + "voxblender/models/scene01.obj"
 loadModelWithUrl(modelUrl)
@@ -135,12 +139,13 @@ print("#### ### #### ### ### ### ### ### ### ### ###")
 # directory = os.path.dirname(blend_file_path)
 # target_file = rootDir + 'voxblender/private/obj/scene01/export_test01.obj'
 # bpy.ops.export_scene.obj(filepath=target_file)
-savingDir = rootDir + 'voxblender/private/obj/scene01/'
+savingDir = rootDir + 'voxblender/private/obj/apple02/'
 exportAMeshPerObj( savingDir )
 
 
-print("exportObjTest exec finish ...")
-# D:\programs\blender\blender.exe -b -P .\exportObjTest.py
+print("exportMeshesToObjs exec finish ...")
+# pysrc\programs\tutorials\exportMeshesToObjs.py
+# D:\programs\blender\blender.exe -b -P .\exportMeshesToObjs.py
 
 
 

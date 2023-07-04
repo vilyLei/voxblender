@@ -31,7 +31,7 @@ def render_scene(scene, on_render_progress):
     # 设置设备类型为GPU
     scene.cycles.device = 'GPU'
 
-    rimg_resolution  = 4096
+    rimg_resolution  = 512
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
     renderer.image_settings.file_format='PNG'
@@ -59,4 +59,8 @@ while thread.is_alive():
     #
 # D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\multiThrRenderBlenderFile.py
 # D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\multiThrRenderBlenderFile.py
+# D:\programs\blender\blender.exe -b ..\..\..\pysrc\shadingSamples\pbrBase_01.blend -P .\multiThrRenderBlenderFile.py
+
+# D:\programs\blender\blender.exe -b D:\dev\webProj\voxblender\pysrc\shadingSamples\pbrBase_01.blend -P D:\dev\webProj\voxblender\pysrc\programs\tutorials\multiThrRenderBlenderFile.py
+# D:\programs\blender\blender.exe -b D:\dev\webProj\minirsvr\src\renderingsvr\static\sceneres\v1ModelRTask2007\pbrBase_01.blend -P D:\dev\webProj\voxblender\pysrc\programs\tutorials\multiThrRenderBlenderFile.py
 # D:\programs\blender\blender.exe -b ..\..\..\models\scene01.obj -P .\multiThrRenderBlenderFile.py

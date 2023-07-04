@@ -99,7 +99,7 @@ rootDir = "D:/dev/webProj/"
 # thanks: https://blenderartists.org/t/assign-image-texture-for-material-in-script/1392848/3
 links = mat.node_tree.links
 
-node_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
+node_tex = mat_nodes.new("ShaderNodeTexImage")
 # node_tex.location = [-300,300]
 # https://docs.blender.org/api/current/bpy.types.ShaderNodeTexImage.html#shadernodeteximage-shadernode
 node_tex.extension = "REPEAT"
@@ -107,20 +107,51 @@ node_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/a
 link = links.new(node_tex.outputs[0], matNode.inputs["Base Color"])
 
 
-node_roughness_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
-node_roughness_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/roughness.jpg')
-node_roughness_tex.image.colorspace_settings.name = 'Non-Color'
-link = links.new(node_roughness_tex.outputs[0], matNode.inputs["Roughness"])
-
-node_metallic_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
+node_metallic_tex = mat_nodes.new("ShaderNodeTexImage")
 node_metallic_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/metallic.jpg')
 node_metallic_tex.image.colorspace_settings.name = 'Non-Color'
 link = links.new(node_metallic_tex.outputs[0], matNode.inputs["Metallic"])
 
 
-node_normal_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
+node_roughness_tex = mat_nodes.new("ShaderNodeTexImage")
+node_roughness_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/roughness.jpg')
+node_roughness_tex.image.colorspace_settings.name = 'Non-Color'
+# link = links.new(node_roughness_tex.outputs[0], matNode.inputs["Roughness"])
+node_colorMixRGB = mat_nodes.new("ShaderNodeMixRGB")
+
+for i, o in enumerate(node_colorMixRGB.inputs):
+    print("node_colorMixRGB.inputs >>>: ", i, o.name)
+for i, o in enumerate(node_colorMixRGB.outputs):
+    print("node_colorMixRGB.outputs >>>: ", i, o.name)
+
+node_colorMixRGB.inputs[0].default_value = 0.0
+node_colorMixRGB.inputs[2].default_value = (0.0,0.0,0.0, 1.0)
+# node_colorMixRGB.blend_type = 'ADD'
+link = links.new(node_roughness_tex.outputs[0], node_colorMixRGB.inputs[1])
+link = links.new(node_colorMixRGB.outputs[0], matNode.inputs["Roughness"])
+
+node_normal_tex = mat_nodes.new("ShaderNodeTexImage")
 node_normal_tex.image = bpy.data.images.load(rootDir + 'voxblender/models/pbrtex/wall/normal.jpg')
 node_normal_tex.image.colorspace_settings.name = 'Non-Color'
-link = links.new(node_normal_tex.outputs[0], matNode.inputs["Normal"])
+# link = links.new(node_normal_tex.outputs[0], matNode.inputs["Normal"])
+
+node_normalMap = mat_nodes.new("ShaderNodeNormalMap")
+# node_normalMap.use_custom_color = True
+node_normalMap.uv_map = 'UVMap'
+node_normalMap.inputs[0].default_value = 2.0
+print("node_normalMap.space: ", node_normalMap.space)
+link = links.new(node_normal_tex.outputs[0], node_normalMap.inputs[1])
+link_normalMap_and_notmal = links.new(node_normalMap.outputs[0], matNode.inputs["Normal"])
+## method 1: remove a shader node from a nodes
+# mat_nodes.remove(node_normalMap)
+## method 2: remove a link from a links
+# links.remove(link_normalMap_and_notmal)
+
 for i, o in enumerate(node_normal_tex.outputs):
     print("node_normal_tex.outputs >>>: ", i, o.name)
+
+for i, o in enumerate(node_normalMap.inputs):
+    print("node_normalMap.inputs >>>: ", i, o.name)
+for i, o in enumerate(node_normalMap.outputs):
+    print("node_normalMap.outputs >>>: ", i, o.name)
+
