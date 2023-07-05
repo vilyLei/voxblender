@@ -482,11 +482,11 @@ def improveModelMaterial(currMaterial):
     
     print("         principled_bsdf: ", principled_bsdf)
     #
-def updateAModelMaterialByName(modelName):
-    # print("updateAModelMaterialByName ops ...")
-    currObj = scene_objectDict[modelName]
-    # materials = currObj.data.materials
-    currMaterial = currObj.active_material
+
+def updateModelMaterial(model):
+    # print("updateModelMaterial ops ...")
+    
+    currMaterial = model.active_material
     currMaterial.use_nodes = True
     improveModelMaterial(currMaterial)
     mat_nodes = currMaterial.node_tree.nodes
@@ -495,7 +495,7 @@ def updateAModelMaterialByName(modelName):
     
     baseColorRGB = (1.5,0.2,0.3)
     baseColorAlpha = 1.0
-    uvScales = (2.0,2.0, 1.0)
+    uvScales = (5.0,5.0, 1.0)
     metallicValue = 0.7
     roughnessValue = 0.2
     specularValue = 0.0
@@ -520,7 +520,7 @@ def updateAModelMaterialByName(modelName):
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
     updateNormal(mat_links, normalNode, uvMappingNode, normalStrength)
 
-    saveToBlendFile("queryCurrMaterial")
+    # saveToBlendFile("queryCurrMaterial")
         
     # for i, o in enumerate(baseColorNode):
     # for k in baseColorNode:
@@ -528,22 +528,32 @@ def updateAModelMaterialByName(modelName):
 
     # for i, o in enumerate(matNode.inputs):
     #     print("matNode.inputs >>>: ", i, o.name)
-
-def updateMaterial():
-    collectModelInfo()
-    # updateMeshesMaterial()
+    #
+    #
+def updateModelsMaterial():
+    # print("updateAModelMaterialByName ops ...")
     # updateAModelMaterialByName('apple_stem_model')
-    updateAModelMaterialByName('apple_body_model')
+    # updateAModelMaterialByName('apple_body_model')
+    model0 = scene_objectDict['apple_stem_model']
+    model1 = scene_objectDict['apple_body_model']
+    # updateModelMaterial(model0)
+    updateModelMaterial(model1)
+
+def updateSceneMaterial():
+    collectModelInfo()
+    updateModelsMaterial()
+    #
+    
 
 if __name__ == "__main__":
 
     clearAllMeshesInScene()
-    modelUrl = rootDir + "voxblender/models/apple02.glb"
-    # modelUrl = rootDir + "voxblender/models/apple03.glb"
+    # modelUrl = rootDir + "voxblender/models/apple02.glb"
+    modelUrl = rootDir + "voxblender/models/apple03.glb"
     loadModelWithUrl(modelUrl)
     print("#### ### #### ### ### ### ### ### ### ### ###")
-    updateMaterial()
-    # render()
+    updateSceneMaterial()
+    render()
     print("queryCurrMaterial exec finish ...")
 
 # D:\programs\blender\blender.exe -b -P .\updateModelMaterial.py
