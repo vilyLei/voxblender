@@ -471,6 +471,11 @@ def updateBaseColor(mat_nodes,mat_links, baseColorNode, uvMappingNode, baseColor
         ls = baseColorRGB
         baseColorNode.default_value = (ls[0], ls[1], ls[2], baseColorAlpha)
 
+def updateSpecular(mat_links, specularNode, uvMappingNode, specularValue):
+    
+    specularNode_origin_Node = getSrcOriginNode( specularNode )
+    if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
+        specularNode.default_value = specularValue
 #
 def updateAModelMaterialByName(modelName):
     # print("updateMeshesMaterial ops ...")
@@ -507,6 +512,7 @@ def updateAModelMaterialByName(modelName):
     metallicValue = 15.0
     roughnessValue = 0.2
     specularValue = 0.8
+    notmalStrength = 1.0
 
     baseColorNode = matNode.inputs['Base Color']
     metallicNode = matNode.inputs['Metallic']
@@ -525,34 +531,14 @@ def updateAModelMaterialByName(modelName):
     print("A 02 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
     updateBaseColor(mat_nodes,mat_links, baseColorNode, uvMappingNode, baseColorRGB, baseColorAlpha)
 
-    # baseColorNode_origin_Node = getSrcOriginNode( baseColorNode )
-    # print("baseColorNode_origin_Node: ", baseColorNode_origin_Node)
-    # print("baseColorNode_origin_Node.type: ", baseColorNode_origin_Node.type)
-    # if uvMappingLinkTexNode(mat_links, uvMappingNode, baseColorNode_origin_Node):
-    #     print("base color src data is a tex")
-    #     node_colorMult = mat_nodes.new("ShaderNodeVectorMath")
-    #     # node_colorMult = mat_nodes.new("ShaderNodeMath")
-
-    #     # link = mat_links.new(srcNode.outputs[0], node_colorMult.inputs[0])
-    #     # link_colorMult_and_baseColor = mat_links.new(node_colorMult.outputs[0], matNode.inputs["Base Color"])
-    #     node_colorMult.operation = 'MULTIPLY'
-    #     node_colorMult.inputs[1].default_value = baseColorRGB
-    #     print("node_colorMult.type >>>: ", node_colorMult.type)
-    #     print("node_colorMult.operation >>>: ", node_colorMult.operation)
-    #     # prependInsertShaderNodeLink(mat_links, currentNode, beginNodeLinkIndex, newNode, outputIndex0, inputIndex0, outputIndex1, inputIndex1)
-    #     prependInsertShaderNodeLink(mat_links, baseColorNode, 0, node_colorMult, 0,0, 0)
-    # else:
-    #     baseColorNode.default_value = (baseColorRGB, baseColorAlpha)
-
     updateMetalAndRoughness(mat_nodes, mat_links, metallicNode, roughnessNode, uvMappingNode, metallicValue, roughnessValue)
-
-    specularNode_origin_Node = getSrcOriginNode( specularNode )
-    if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
-        specularNode.default_value = specularValue
+    updateSpecular(mat_links, specularNode, uvMappingNode, specularValue)
+    # specularNode_origin_Node = getSrcOriginNode( specularNode )
+    # if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
+    #     specularNode.default_value = specularValue
 
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
 
-    notmalStrength = 1.0
     normalNode_origin_Node = getSrcOriginNode( normalNode )
     if normalNode_origin_Node is not None:
         print("normalNode_origin_Node: ", normalNode_origin_Node)

@@ -504,6 +504,7 @@ def updateAModelMaterialByName(modelName):
     metallicValue = 15.0
     roughnessValue = 0.2
     specularValue = 0.8
+    notmalStrength = 1.0
 
     baseColorNode = matNode.inputs['Base Color']
     metallicNode = matNode.inputs['Metallic']
@@ -549,7 +550,6 @@ def updateAModelMaterialByName(modelName):
 
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
 
-    notmalStrength = 1.0
     normalNode_origin_Node = getSrcOriginNode( normalNode )
     print("normalNode_origin_Node: ", normalNode_origin_Node)
     print("normalNode_origin_Node.type: ", normalNode_origin_Node.type)
