@@ -182,59 +182,23 @@ if not os.path.exists(rootDir):
     rootDir = "D:/dev/webProj/"
 
 scene_objectDict = {}
-def queryMaterials():
+def collectModelInfo():
     global scene_objectDict
-    print("queryMaterials() init ...")
+    print("collectModelInfo() init ...")
     # global rootDir
 
     mesh_objectDict = {}
     # create dict with meshes
     for m in bpy.data.meshes:
             mesh_objectDict[m.name] = []
-    
-    # for obj in bpy.context.scene.objects:
-    #     # only for meshes
-    #     if obj.type == 'MESH':
-    #         # if this mesh exists in the dict
-    #         if obj.data.name in mesh_objectDict:
-    #             print("setting false.")
-    #             obj.hide_set(False)
-    #             obj.select_set(False)
-    #             ### ###
-    ### ########################################################
-    # index = 0
-    
-    # target_file_dir = rootDir + 'voxblender/private/obj/scene01/export_test01.obj'
-    # file_dir = rootDir + 'voxblender/private/obj/scene01/'
-    
     context = bpy.context
-    viewlayer = context.view_layer
-    
-    # if not os.path.exists(savingDir):
-    #     os.makedirs(savingDir)
     ########################################
     for obj in bpy.context.scene.objects:
-        # only for meshes
         if obj.type == 'MESH':
-            # if this mesh exists in the dict
             if obj.data.name in mesh_objectDict:
-
-                # obj.hide_set(True)
-                # obj.select_set(True)
-                # viewlayer.objects.active = obj
-                # obj.select_set(True)
-                # filePath = savingDir + "export_" + str(index) + ".obj"
-                # filePath = savingDir + obj.data.name + ".obj"
-                # index += 1
                 print("obj.name: ", obj.name)
                 print("obj.data.name: ", obj.data.name)
                 scene_objectDict[obj.data.name] = obj
-                # bpy.ops.export_scene.obj(filepath=filePath, use_selection = True, use_materials=False, use_triangles=True)
-                # bpy.ops.export_scene.obj(filepath=filePath, use_selection = True)
-                # bpy.ops.export_scene.obj(filepath=filePath, use_selection = True, use_materials=False)
-                # obj.hide_set(False)
-                # obj.select_set(False)
-                # break
                 ### ###
     #
 
@@ -471,13 +435,29 @@ def updateBaseColor(mat_nodes,mat_links, baseColorNode, uvMappingNode, baseColor
     else:
         print("nbaseColorRGB >>>: ", baseColorRGB)
         ls = baseColorRGB
-        baseColorNode.default_value = (ls[0], ls[1], ls[2], baseColorAlpha)
+        color = (ls[0], ls[1], ls[2], baseColorAlpha)
+        baseColorNode.default_value = color
 
 def updateSpecular(mat_links, specularNode, uvMappingNode, specularValue):
     
     specularNode_origin_Node = getSrcOriginNode( specularNode )
     if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
         specularNode.default_value = specularValue
+
+def updateNormal(mat_links, normalNode, uvMappingNode, normalStrength):
+    
+    normalNode_origin_Node = getSrcOriginNode( normalNode )
+    if normalNode_origin_Node is not None:
+        print("normalNode_origin_Node: ", normalNode_origin_Node)
+        print("normalNode_origin_Node.type: ", normalNode_origin_Node.type)
+    if uvMappingLinkTexNode(mat_links, uvMappingNode, normalNode_origin_Node):
+        normalMapNode = getShaderNodeFromNodeAt(normalNode, 0)
+        if normalMapNode:
+            # Strength
+            # print("normalMapNode Strength: ", normalMapNode.inputs[0].default_value)
+            normalMapNode.inputs[0].default_value = normalStrength
+            # for i, o in enumerate(normalMapNode.inputs):
+            #     print("normalMapNode.inputs >>>: ", i, o.name)
 #
 def updateAModelMaterialByName(modelName):
     # print("updateMeshesMaterial ops ...")
@@ -511,10 +491,10 @@ def updateAModelMaterialByName(modelName):
     baseColorRGB = (1.0,0.2,2.1)
     baseColorAlpha = 1.0
     uvScales = (2.0,2.0, 1.0)
-    metallicValue = 15.0
+    metallicValue = 0.7
     roughnessValue = 0.2
     specularValue = 0.8
-    notmalStrength = 1.0
+    normalStrength = 1.0
 
     baseColorNode = matNode.inputs['Base Color']
     metallicNode = matNode.inputs['Metallic']
@@ -540,19 +520,19 @@ def updateAModelMaterialByName(modelName):
     #     specularNode.default_value = specularValue
 
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
-
-    normalNode_origin_Node = getSrcOriginNode( normalNode )
-    if normalNode_origin_Node is not None:
-        print("normalNode_origin_Node: ", normalNode_origin_Node)
-        print("normalNode_origin_Node.type: ", normalNode_origin_Node.type)
-    if uvMappingLinkTexNode(mat_links, uvMappingNode, normalNode_origin_Node):
-        normalMapNode = getShaderNodeFromNodeAt(normalNode, 0)
-        if normalMapNode:
-            # Strength
-            # print("normalMapNode Strength: ", normalMapNode.inputs[0].default_value)
-            normalMapNode.inputs[0].default_value = notmalStrength
-            # for i, o in enumerate(normalMapNode.inputs):
-            #     print("normalMapNode.inputs >>>: ", i, o.name)
+    updateNormal(mat_links, normalNode, uvMappingNode, normalStrength)
+    # normalNode_origin_Node = getSrcOriginNode( normalNode )
+    # if normalNode_origin_Node is not None:
+    #     print("normalNode_origin_Node: ", normalNode_origin_Node)
+    #     print("normalNode_origin_Node.type: ", normalNode_origin_Node.type)
+    # if uvMappingLinkTexNode(mat_links, uvMappingNode, normalNode_origin_Node):
+    #     normalMapNode = getShaderNodeFromNodeAt(normalNode, 0)
+    #     if normalMapNode:
+    #         # Strength
+    #         # print("normalMapNode Strength: ", normalMapNode.inputs[0].default_value)
+    #         normalMapNode.inputs[0].default_value = normalStrength
+    #         # for i, o in enumerate(normalMapNode.inputs):
+    #         #     print("normalMapNode.inputs >>>: ", i, o.name)
 
     # blend_file_path = bpy.data.filepath
     # directory = os.path.dirname(blend_file_path)
@@ -577,7 +557,7 @@ def updateAModelMaterialByName(modelName):
     #     print("matNode.inputs >>>: ", i, o.name)
 
 def updateMaterial():
-    queryMaterials()
+    collectModelInfo()
     # updateMeshesMaterial()
     updateAModelMaterialByName('apple_stem_model')
     updateAModelMaterialByName('apple_body_model')
