@@ -178,6 +178,8 @@ def loadModelWithUrl(url):
 
 # rootDir = "D:/dev/webProj/"
 rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 scene_objectDict = {}
 def queryMaterials():
