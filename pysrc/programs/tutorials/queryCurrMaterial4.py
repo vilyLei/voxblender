@@ -591,13 +591,14 @@ def updateAModelMaterialByName(modelName):
 def updateMaterial():
     queryMaterials()
     # updateMeshesMaterial()
+    updateAModelMaterialByName('apple_stem_model')
     updateAModelMaterialByName('apple_body_model')
 
 if __name__ == "__main__":
 
     clearAllMeshesInScene()
-    # modelUrl = rootDir + "voxblender/models/apple02.glb"
-    modelUrl = rootDir + "voxblender/models/apple03.glb"
+    modelUrl = rootDir + "voxblender/models/apple02.glb"
+    # modelUrl = rootDir + "voxblender/models/apple03.glb"
     loadModelWithUrl(modelUrl)
     print("#### ### #### ### ### ### ### ### ### ### ###")
     updateMaterial()
