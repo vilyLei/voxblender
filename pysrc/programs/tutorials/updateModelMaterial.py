@@ -266,6 +266,13 @@ def render():
     # target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/glbToBld.blend")
     # bpy.ops.wm.save_as_mainfile(filepath=target_file)
     # #####################################
+
+def saveToBlendFile(ns):
+    blend_file_path = bpy.data.filepath
+    directory = os.path.dirname(blend_file_path)
+    target_file = os.path.join(directory, rootDir + "voxblender/renderingImg/"+ns+".blend")
+    bpy.ops.wm.save_as_mainfile(filepath=target_file)
+    ###
 def objsFitToCamera():
     global scene_objectDict
     # Select objects that will be rendered
@@ -367,6 +374,7 @@ def updateMetalAndRoughness(mat_nodes, mat_links, metallicNode, roughnessNode, u
     else:
         metallicNode.default_value = metallic
         roughnessNode.default_value = roughness
+        print("updateMetalAndRoughness(), metallic: ", metallic, ", roughness: ", roughness)
     ###
     if metallic_origin_Node is not None and metallic_origin_Node.type == "TEX_IMAGE":
         print("add a multiply node for metallic node.")
@@ -443,6 +451,7 @@ def updateSpecular(mat_links, specularNode, uvMappingNode, specularValue):
     specularNode_origin_Node = getSrcOriginNode( specularNode )
     if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
         specularNode.default_value = specularValue
+        print("updateSpecular(), specularValue: ", specularValue)
 
 def updateNormal(mat_links, normalNode, uvMappingNode, normalStrength):
     
@@ -459,13 +468,7 @@ def updateNormal(mat_links, normalNode, uvMappingNode, normalStrength):
             # for i, o in enumerate(normalMapNode.inputs):
             #     print("normalMapNode.inputs >>>: ", i, o.name)
 #
-def updateAModelMaterialByName(modelName):
-    # print("updateAModelMaterialByName ops ...")
-    currObj = scene_objectDict[modelName]
-    # materials = currObj.data.materials
-    currMaterial = currObj.active_material
-    currMaterial.use_nodes = True
-    
+def improveModelMaterial(currMaterial):
     mat_nodes = currMaterial.node_tree.nodes
     mat_links = currMaterial.node_tree.links
     principled_bsdf = mat_nodes.get("Principled BSDF")
@@ -478,6 +481,16 @@ def updateAModelMaterialByName(modelName):
         link = mat_links.new(principled_bsdf.outputs["BSDF"], material_output.inputs["Surface"])
     
     print("         principled_bsdf: ", principled_bsdf)
+    #
+def updateAModelMaterialByName(modelName):
+    # print("updateAModelMaterialByName ops ...")
+    currObj = scene_objectDict[modelName]
+    # materials = currObj.data.materials
+    currMaterial = currObj.active_material
+    currMaterial.use_nodes = True
+    improveModelMaterial(currMaterial)
+    mat_nodes = currMaterial.node_tree.nodes
+    mat_links = currMaterial.node_tree.links
     matNode = mat_nodes[0]
     
     baseColorRGB = (1.5,0.2,0.3)
@@ -507,10 +520,7 @@ def updateAModelMaterialByName(modelName):
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
     updateNormal(mat_links, normalNode, uvMappingNode, normalStrength)
 
-    # blend_file_path = bpy.data.filepath
-    # directory = os.path.dirname(blend_file_path)
-    # target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/queryCurrMaterial.blend")
-    # bpy.ops.wm.save_as_mainfile(filepath=target_file)
+    saveToBlendFile("queryCurrMaterial")
         
     # for i, o in enumerate(baseColorNode):
     # for k in baseColorNode:
@@ -522,7 +532,7 @@ def updateAModelMaterialByName(modelName):
 def updateMaterial():
     collectModelInfo()
     # updateMeshesMaterial()
-    updateAModelMaterialByName('apple_stem_model')
+    # updateAModelMaterialByName('apple_stem_model')
     updateAModelMaterialByName('apple_body_model')
 
 if __name__ == "__main__":
