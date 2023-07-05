@@ -371,12 +371,12 @@ def getSrcOriginNode(currNode):
 
 def uvMappingLinkTexNode(mat_links, uvMappingNode, texNode):
     if texNode is not None:
-        if(texNode.type == "TEX_IMAGE"):
+        if texNode.type == "TEX_IMAGE":
             link = mat_links.new(uvMappingNode.outputs[0], texNode.inputs[0])
             return True
     return False
 
-def updateMetalAndRoughness(mat_links, metallicNode, roughnessNode, uvMappingNode,  metallic, roughness):
+def updateMetalAndRoughness(mat_nodes, mat_links, metallicNode, roughnessNode, uvMappingNode,  metallic, roughness):
     ###
     metallic_origin_Node = getSrcOriginNode( metallicNode )
     roughness_origin_Node = getSrcOriginNode( roughnessNode )
@@ -401,10 +401,78 @@ def updateMetalAndRoughness(mat_links, metallicNode, roughnessNode, uvMappingNod
     else:
         metallicNode.default_value = metallic
         roughnessNode.default_value = roughness
+    ###
+    if metallic_origin_Node is not None and metallic_origin_Node.type == "TEX_IMAGE":
+        print("add a multiply node for metallic node.")
+        metallic_from_Node = getShaderNodeFromNodeAt(metallicNode, 0)
+        print("metallic_from_Node >>>: ", metallic_from_Node)
+        print("metallic_from_Node.type >>>: ", metallic_from_Node.type)
+        # operation
+        node_metallicMult = mat_nodes.new("ShaderNodeMath")
+        node_metallicMult.operation = 'MULTIPLY'
+        node_metallicMult.inputs[1].default_value = metallic
+        prependInsertShaderNodeLink(mat_links, metallicNode, 0, node_metallicMult, 0,0, 0)
+        # for i, o in enumerate(node_metallicMult.inputs):
+        #     print("node_metallicMult.inputs >>>: ", i, o.name)
+        # for i, o in enumerate(node_metallicMult.outputs):
+        #     print("node_metallicMult.outputs >>>: ", i, o.name)
+        # #prependInsertShaderNodeLink
+    
+    if roughness_origin_Node is not None and roughness_origin_Node.type == "TEX_IMAGE":
+        print("add a multiply node for roughness node.")
+        roughness_from_Node = getShaderNodeFromNodeAt(roughnessNode, 0)
+        print("roughness_from_Node >>>: ", roughness_from_Node)
+        print("roughness_from_Node.type >>>: ", roughness_from_Node.type)
+        # operation
+        node_roughnessMult = mat_nodes.new("ShaderNodeMath")
+        node_roughnessMult.operation = 'MULTIPLY'
+        node_roughnessMult.inputs[1].default_value = roughness
+        prependInsertShaderNodeLink(mat_links, roughnessNode, 0, node_roughnessMult, 0,0, 0)
 
-def updateMeshesMaterial():
-    print("updateMeshesMaterial ops ...")
-    currObj = scene_objectDict["apple_body_model"]
+        # for i, o in enumerate(node_roughnessMult.inputs):
+        #     print("node_roughnessMult.inputs >>>: ", i, o.name)
+        # for i, o in enumerate(node_roughnessMult.outputs):
+        #     print("node_roughnessMult.outputs >>>: ", i, o.name)
+        # #prependInsertShaderNodeLink
+
+def prependInsertShaderNodeLink(mat_links, currentNode, currNodeLinkIndex, newNode, outputIndex0, inputIndex0, outputIndex1):
+    currLink = currentNode.links[currNodeLinkIndex]
+    fromNode = currLink.from_node
+    mat_links.remove(currLink)
+    link0 = mat_links.new(fromNode.outputs[outputIndex0], newNode.inputs[inputIndex0])
+    link1 = mat_links.new(newNode.outputs[outputIndex1], currentNode)
+
+def appendInsertShaderNodeLink(mat_links, currentNode, currNodeLinkIndex, newNode, inputIndex0, outputIndex1, inputIndex1):
+    currLink = currentNode.links[currNodeLinkIndex]
+    toNode = currLink.to_node
+    mat_links.remove(currLink)
+    link0 = mat_links.new(currentNode, newNode.inputs[inputIndex0])
+    link1 = mat_links.new(newNode.outputs[outputIndex1], toNode.inputs[inputIndex1])
+
+def updateBaseColor(mat_nodes,mat_links, baseColorNode, uvMappingNode, baseColorRGB, baseColorAlpha):
+    baseColorNode_origin_Node = getSrcOriginNode( baseColorNode )
+    print("baseColorNode_origin_Node: ", baseColorNode_origin_Node)
+    print("baseColorNode_origin_Node.type: ", baseColorNode_origin_Node.type)
+    if uvMappingLinkTexNode(mat_links, uvMappingNode, baseColorNode_origin_Node):
+        print("base color src data is a tex")
+        node_colorMult = mat_nodes.new("ShaderNodeVectorMath")
+        # node_colorMult = mat_nodes.new("ShaderNodeMath")
+
+        # link = mat_links.new(srcNode.outputs[0], node_colorMult.inputs[0])
+        # link_colorMult_and_baseColor = mat_links.new(node_colorMult.outputs[0], matNode.inputs["Base Color"])
+        node_colorMult.operation = 'MULTIPLY'
+        node_colorMult.inputs[1].default_value = baseColorRGB
+        print("node_colorMult.type >>>: ", node_colorMult.type)
+        print("node_colorMult.operation >>>: ", node_colorMult.operation)
+        prependInsertShaderNodeLink(mat_links, baseColorNode, 0, node_colorMult, 0,0, 0)
+    else:
+        baseColorNode.default_value = (baseColorRGB, baseColorAlpha)
+
+#
+def updateAModelMaterialByName(modelName):
+    # print("updateMeshesMaterial ops ...")
+    # currObj = scene_objectDict["apple_body_model"]
+    currObj = scene_objectDict[modelName]
     # currObj = bpy.context.scene.objects["apple_body"]
     print("         currObj: ", currObj)
     materials = currObj.data.materials
@@ -430,6 +498,13 @@ def updateMeshesMaterial():
     print("         principled_bsdf: ", principled_bsdf)
     matNode = mat_nodes[0]
     
+    baseColorRGB = (1.0,0.2,2.1)
+    baseColorAlpha = 1.0
+    uvScales = (2.0,2.0, 1.0)
+    metallicValue = 15.0
+    roughnessValue = 0.2
+    specularValue = 0.8
+
     baseColorNode = matNode.inputs['Base Color']
     metallicNode = matNode.inputs['Metallic']
     roughnessNode = matNode.inputs['Roughness']
@@ -438,21 +513,39 @@ def updateMeshesMaterial():
     print("A 01 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
     
     uvMappingNode = createUVShaderNode(mat_nodes, mat_links)
-    uvMappingNode.inputs[3].default_value = (1.0,1.0, 1.0)
-    
-    print("A 02 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
-    baseColorNode_origin_Node = getSrcOriginNode( baseColorNode )
-    print("baseColorNode_origin_Node: ", baseColorNode_origin_Node)
-    print("baseColorNode_origin_Node.type: ", baseColorNode_origin_Node.type)
-    if uvMappingLinkTexNode(mat_links, uvMappingNode, baseColorNode_origin_Node):
-        print("base color src data is a tex")
-    else:
-        baseColorNode.default_value = (0.8,0.3,0.0,1.0)
+    uvMappingNode.inputs[3].default_value = uvScales
 
-    # updateMetalAndRoughness(mat_links, metallicNode, roughnessNode, uvMappingNode, 0.5, 0.5)
-    # specularNode_origin_Node = getSrcOriginNode( specularNode )
-    # if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
-    #     specularNode.default_value = 0.5
+    # currLink = baseColorNode.links[0]
+    # print("currLink >>>: ", currLink)
+    # print("currLink.from_node >>>: ", currLink.from_node)
+    # print("currLink.from_socket >>>: ", currLink.from_socket)
+    print("A 02 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
+    updateBaseColor(mat_nodes,mat_links, baseColorNode, uvMappingNode, baseColorRGB, baseColorAlpha)
+
+    # baseColorNode_origin_Node = getSrcOriginNode( baseColorNode )
+    # print("baseColorNode_origin_Node: ", baseColorNode_origin_Node)
+    # print("baseColorNode_origin_Node.type: ", baseColorNode_origin_Node.type)
+    # if uvMappingLinkTexNode(mat_links, uvMappingNode, baseColorNode_origin_Node):
+    #     print("base color src data is a tex")
+    #     node_colorMult = mat_nodes.new("ShaderNodeVectorMath")
+    #     # node_colorMult = mat_nodes.new("ShaderNodeMath")
+
+    #     # link = mat_links.new(srcNode.outputs[0], node_colorMult.inputs[0])
+    #     # link_colorMult_and_baseColor = mat_links.new(node_colorMult.outputs[0], matNode.inputs["Base Color"])
+    #     node_colorMult.operation = 'MULTIPLY'
+    #     node_colorMult.inputs[1].default_value = baseColorRGB
+    #     print("node_colorMult.type >>>: ", node_colorMult.type)
+    #     print("node_colorMult.operation >>>: ", node_colorMult.operation)
+    #     # prependInsertShaderNodeLink(mat_links, currentNode, beginNodeLinkIndex, newNode, outputIndex0, inputIndex0, outputIndex1, inputIndex1)
+    #     prependInsertShaderNodeLink(mat_links, baseColorNode, 0, node_colorMult, 0,0, 0)
+    # else:
+    #     baseColorNode.default_value = (baseColorRGB, baseColorAlpha)
+
+    updateMetalAndRoughness(mat_nodes, mat_links, metallicNode, roughnessNode, uvMappingNode, metallicValue, roughnessValue)
+
+    specularNode_origin_Node = getSrcOriginNode( specularNode )
+    if not uvMappingLinkTexNode(mat_links, uvMappingNode, specularNode_origin_Node):
+        specularNode.default_value = specularValue
 
     print("A 03 >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>> >>>")
 
@@ -473,7 +566,10 @@ def updateMeshesMaterial():
     # directory = os.path.dirname(blend_file_path)
     # target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/queryCurrMaterial.blend")
     # bpy.ops.wm.save_as_mainfile(filepath=target_file)
-    return
+    
+    # for i, o in enumerate(matNode.inputs):
+    #     print("matNode.inputs >>>: ", i, o.name)
+    # return
     # 金色
     # matNode.inputs['Base Color'].default_value = (0.8,0.3,0.0,1.0)
     # 紫水晶
@@ -481,66 +577,6 @@ def updateMeshesMaterial():
     # matNode.inputs['Base Color'].default_value = (0.3,0.9,0.2,1.0)
     # matNode.inputs['Metallic'].default_value = 0.5
     
-    print("baseColorNode                    ###: ", baseColorNode)
-    print("baseColorNode.default_value      ###: ", baseColorNode.default_value)
-    print("baseColorNode.links              ###: ", baseColorNode.links)
-    currLinks = baseColorNode.links
-    linksTotal = len(currLinks)
-    print("baseColorNode.links len          ###: ", linksTotal)
-    if linksTotal > 0:
-        currLink = currLinks[0]
-        print("         currLink          ###: ", currLink)
-        srcNode = currLink.from_node
-        print("         srcNode               ###: ", srcNode)
-        print("         srcNode.type          ###: ", srcNode.type)
-        if(srcNode.type == "TEX_IMAGE"):
-
-            mat_links.remove(currLink)
-
-            # node_texCoord = mat_nodes.new("ShaderNodeTexCoord")
-            # for i, o in enumerate(node_texCoord.outputs):
-            #     print("node_texCoord.outputs >>>: ", i, o.name)
-            # # node_texCoord.outputs[2], UV
-            # node_texCoord_mapping = mat_nodes.new("ShaderNodeMapping")
-            # # node_texCoord_mapping.inputs[0], uv vtx data
-            # # uv scale
-            # node_texCoord_mapping.inputs[3].default_value = (1.0,1.0, 1.0)
-            # link = mat_links.new(node_texCoord.outputs[2], node_texCoord_mapping.inputs[0])
-            # for i, o in enumerate(node_texCoord_mapping.inputs):
-            #     print("node_texCoord_mapping.inputs >>>: ", i, o.name)
-            # for i, o in enumerate(node_texCoord_mapping.outputs):
-            #     print("node_texCoord_mapping.outputs >>>: ", i, o.name)
-
-            # link = mat_links.new(node_texCoord_mapping.outputs[0], srcNode.inputs[0])
-
-            link = mat_links.new(uvMappingNode.outputs[0], srcNode.inputs[0])
-
-            node_colorMult = mat_nodes.new("ShaderNodeVectorMath")
-            # node_colorMult = mat_nodes.new("ShaderNodeMath")
-            
-
-            link = mat_links.new(srcNode.outputs[0], node_colorMult.inputs[0])
-            link_colorMult_and_baseColor = mat_links.new(node_colorMult.outputs[0], matNode.inputs["Base Color"])
-            node_colorMult.operation = 'MULTIPLY'
-            node_colorMult.inputs[1].default_value = (1.0, 0.0, 1.0)
-            print("node_colorMult.type >>>: ", node_colorMult.type)
-            print("node_colorMult.operation >>>: ", node_colorMult.operation)
-            
-            for i, o in enumerate(srcNode.inputs):
-                print("srcNode.inputs >>>: ", i, o.name)
-            for i, o in enumerate(srcNode.outputs):
-                print("srcNode.outputs >>>: ", i, o.name)
-            
-            for i, o in enumerate(node_colorMult.inputs):
-                print("node_colorMult.inputs >>>: ", i, o.name)
-            for i, o in enumerate(node_colorMult.outputs):
-                print("node_colorMult.outputs >>>: ", i, o.name)
-            # mat_links.remove(link_normalMap_and_notmal)
-            # node_colorMult.texture_mapping.scale[0] = uvScales[0]
-            # node_colorMult.texture_mapping.scale[1] = uvScales[1]
-            # ShaderNodeVectorMath
-    else:
-        baseColorNode.default_value = (0.8,0.3,0.0,1.0)
     # for i, o in enumerate(baseColorNode):
     # for k in baseColorNode:
     #     print("baseColorNode >>>: ", k, )
@@ -550,7 +586,8 @@ def updateMeshesMaterial():
 
 def updateMaterial():
     queryMaterials()
-    updateMeshesMaterial()
+    # updateMeshesMaterial()
+    updateAModelMaterialByName('apple_body_model')
 
 if __name__ == "__main__":
 
@@ -560,7 +597,7 @@ if __name__ == "__main__":
     loadModelWithUrl(modelUrl)
     print("#### ### #### ### ### ### ### ### ### ### ###")
     updateMaterial()
-    # render()
+    render()
     print("queryCurrMaterial exec finish ...")
 
-# D:\programs\blender\blender.exe -b -P .\queryCurrMaterial.py
+# D:\programs\blender\blender.exe -b -P .\queryCurrMaterial3.py

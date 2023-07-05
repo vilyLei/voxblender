@@ -110,11 +110,11 @@ node_normalMap.uv_map = 'UVMap'
 node_normalMap.inputs[0].default_value = 2.0
 print("node_normalMap.space: ", node_normalMap.space)
 link = links.new(node_normal_tex.outputs[0], node_normalMap.inputs[1])
-link_normalMap_and_notmal = links.new(node_normalMap.outputs[0], matNode.inputs["Normal"])
+link_normalMap_and_normal = links.new(node_normalMap.outputs[0], matNode.inputs["Normal"])
 ## method 1: remove a shader node from a nodes
 # mat_nodes.remove(node_normalMap)
 ## method 2: remove a link from a links
-# links.remove(link_normalMap_and_notmal)
+# links.remove(link_normalMap_and_normal)
 
 for i, o in enumerate(node_normal_tex.outputs):
     print("node_normal_tex.outputs >>>: ", i, o.name)
