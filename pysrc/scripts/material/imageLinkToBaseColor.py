@@ -1,4 +1,9 @@
 import bpy
+import os
+
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 def directToTarget(obj, target):
     constraint = obj.constraints.new('TRACK_TO')
@@ -41,9 +46,6 @@ matNode = mat_nodes[0]
 matNode.inputs['Metallic'].default_value = 1.0
 matNode.inputs['Base Color'].default_value = (0.8,0.3,0.0,1.0)
 
-
-rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
 
 # thanks: https://blenderartists.org/t/assign-image-texture-for-material-in-script/1392848/3
 

@@ -6,6 +6,11 @@ import bpy
 import threading
 import time
 from bpy import context
+import os
+
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 
 now = int(round(time.time()*1000))
@@ -46,8 +51,7 @@ def clearScene():
     bpy.ops.object.delete()
     #
 def render_scene(scene):
-    rootDir = "D:/dev/webProj/"
-    # rootDir = "D:/dev/webdev/"
+    
     # 渲染进度回调函数的设置
     # bpy.app.handlers.render_write.append(on_render_progress)
 

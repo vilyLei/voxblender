@@ -1,4 +1,9 @@
 import bpy
+import os
+
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 def loadAObjMesh(obj_file):
     # 加载OBJ模型
@@ -10,8 +15,6 @@ def loadAObjMesh(obj_file):
     #
 ### #### #### #### ### ### ### #### ###
 
-rootDir = "D:/dev/webProj/"
-#rootDir = "D:/dev/webdev/"
 
 resUrl = rootDir + "voxblender/models/box01.obj"
 

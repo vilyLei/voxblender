@@ -1,4 +1,9 @@
 import bpy
+import os
+
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 # import mathutils
 # # 创建一个cube
 # bpy.ops.mesh.primitive_cube_add(enter_editmode=False, align='WORLD', location=(0,0, 0), scale=(1, 1, 1))
@@ -40,9 +45,6 @@ print("mesh_obj_names: ", mesh_obj_names)
 print("mesh_objectDict: ", mesh_objectDict)
 print("mesh_objs: ", mesh_objs)
 
-
-rootDir = "D:/dev/webProj/"
-#rootDir = "D:/dev/webdev/"
 
 # Set the background to use an environment texture
 # bpy.context.scene.render.film_transparent = True

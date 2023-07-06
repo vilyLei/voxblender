@@ -1,6 +1,11 @@
 import bpy
 import bmesh
 import struct
+import os
+
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 def toTuplesByStepN(datals, stepN = 4):
     ds = tuple(datals)
@@ -51,8 +56,6 @@ def clearRawIScene():
         print("has not the default Cube object in the current scene.")
 clearAllMeshesInScene()
 ################################
-rootDir = "D:/dev/webProj/"
-#rootDir = "D:/dev/webdev/"
 
 file_vs = open(rootDir + 'voxblender/models/verticesBox.bin','rb')
 dataStr_vs = file_vs.read()

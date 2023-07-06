@@ -6,6 +6,10 @@ from mathutils import Matrix
 import time
 import os
 
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
+
 
 now = int(round(time.time()*1000))
 currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
@@ -165,8 +169,6 @@ def loadModelWithUrl(url):
     return True
     #
 
-rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
 
 clearAllMeshesInScene()
 modelUrl = rootDir + "voxblender/models/apple02.glb"
