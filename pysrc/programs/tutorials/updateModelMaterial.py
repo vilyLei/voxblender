@@ -9,6 +9,9 @@ from mathutils import Matrix
 import time
 import os
 
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
 now = int(round(time.time()*1000))
 currTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
@@ -176,32 +179,6 @@ def loadModelWithUrl(url):
     return True
     #
 
-# rootDir = "D:/dev/webProj/"
-rootDir = "D:/dev/webdev/"
-if not os.path.exists(rootDir):
-    rootDir = "D:/dev/webProj/"
-
-scene_objectDict = {}
-def collectModelInfo():
-    global scene_objectDict
-    print("collectModelInfo() init ...")
-    # global rootDir
-
-    mesh_objectDict = {}
-    # create dict with meshes
-    for m in bpy.data.meshes:
-            mesh_objectDict[m.name] = []
-    context = bpy.context
-    ########################################
-    for obj in bpy.context.scene.objects:
-        if obj.type == 'MESH':
-            if obj.data.name in mesh_objectDict:
-                print("obj.name: ", obj.name)
-                print("obj.data.name: ", obj.data.name)
-                scene_objectDict[obj.data.name] = obj
-                ### ###
-    #
-
 def render():
     scaleFlag = meshObjScaleUtils.uniformScaleSceneObjs((2.0, 2.0, 2.0))
     objsFitToCamera()
@@ -256,17 +233,29 @@ def render():
     renderer.pixel_aspect_y = 1.0
     bpy.ops.render.render(write_still=True)
 
-    # blend_file_path = bpy.data.filepath
-    # directory = os.path.dirname(blend_file_path)
-    # target_file = os.path.join(directory, '../../private/obj/export_test01.obj')
-    # target_file = rootDir + 'voxblender/private/obj/export_test01.obj'
-    # bpy.ops.export_scene.obj(filepath=target_file)
-
-
-    # target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/glbToBld.blend")
-    # bpy.ops.wm.save_as_mainfile(filepath=target_file)
     # #####################################
 
+
+scene_modelDict = {}
+def collectModelInfo():
+    global scene_modelDict
+    print("collectModelInfo() init ...")
+    # global rootDir
+
+    mesh_objectDict = {}
+    # create dict with meshes
+    for m in bpy.data.meshes:
+            mesh_objectDict[m.name] = []
+    context = bpy.context
+    ########################################
+    for obj in bpy.context.scene.objects:
+        if obj.type == 'MESH':
+            if obj.data.name in mesh_objectDict:
+                print("obj.name: ", obj.name)
+                print("obj.data.name: ", obj.data.name)
+                scene_modelDict[obj.data.name] = obj
+                ### ###
+    #
 def saveToBlendFile(ns):
     blend_file_path = bpy.data.filepath
     directory = os.path.dirname(blend_file_path)
@@ -274,7 +263,7 @@ def saveToBlendFile(ns):
     bpy.ops.wm.save_as_mainfile(filepath=target_file)
     ###
 def objsFitToCamera():
-    global scene_objectDict
+    global scene_modelDict
     # Select objects that will be rendered
     for obj in context.scene.objects:
         obj.select_set(False)
@@ -468,7 +457,7 @@ def updateNormal(mat_links, normalNode, uvMappingNode, normalStrength):
             # for i, o in enumerate(normalMapNode.inputs):
             #     print("normalMapNode.inputs >>>: ", i, o.name)
 #
-def improveModelMaterial(currMaterial):
+def checkModelMaterial(currMaterial):
     mat_nodes = currMaterial.node_tree.nodes
     mat_links = currMaterial.node_tree.links
     principled_bsdf = mat_nodes.get("Principled BSDF")
@@ -488,7 +477,7 @@ def updateModelMaterial(model):
     
     currMaterial = model.active_material
     currMaterial.use_nodes = True
-    improveModelMaterial(currMaterial)
+    checkModelMaterial(currMaterial)
     mat_nodes = currMaterial.node_tree.nodes
     mat_links = currMaterial.node_tree.links
     matNode = mat_nodes[0]
@@ -534,8 +523,8 @@ def updateModelsMaterial():
     # print("updateAModelMaterialByName ops ...")
     # updateAModelMaterialByName('apple_stem_model')
     # updateAModelMaterialByName('apple_body_model')
-    model0 = scene_objectDict['apple_stem_model']
-    model1 = scene_objectDict['apple_body_model']
+    model0 = scene_modelDict['apple_stem_model']
+    model1 = scene_modelDict['apple_body_model']
     # updateModelMaterial(model0)
     updateModelMaterial(model1)
 
