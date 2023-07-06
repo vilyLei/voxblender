@@ -222,7 +222,7 @@ def render():
     renderer.threads = 8
     # renderer.film_transparent = True
     renderer.image_settings.file_format='PNG'
-    renderer.filepath = rootDir + "voxblender/renderingImg/queryCurrMaterial.png"
+    renderer.filepath = rootDir + "voxblender/renderingImg/updateModelMaterial.png"
     #https://docs.blender.org/api/current/bpy.types.RenderEngine.html
     renderer.resolution_x = output_img_resolution
     renderer.resolution_y = output_img_resolution
