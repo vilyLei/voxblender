@@ -3,22 +3,26 @@ import os
 import threading
 import time
 import math
+from bpy import context
 
 rootDir = "D:/dev/webdev/"
 if not os.path.exists(rootDir):
     rootDir = "D:/dev/webProj/"
 
-def render_scene(scene, on_render_progress):
-# def render_scene(on_render_progress):
-    # 设置渲染引擎为Cycles
-    # scene.render.engine = 'CYCLES'
-    # # 设置渲染完成度回调函数
-    # bpy.app.handlers.render_write.append(on_render_progress)
-    # # 渲染场景
-    # bpy.ops.render.render(write_still=True)
-    # 渲染进度回调函数的设置
-    bpy.app.handlers.render_write.append(on_render_progress)
+def objsFitToCamera():
+    # Select objects that will be rendered
+    for obj in context.scene.objects:
+        obj.select_set(False)
+    for obj in context.visible_objects:
+        if not (obj.hide_get() or obj.hide_render):
+            obj.select_set(True)
+    #
+    print("objsFitToCamera ops ...")
+    bpy.ops.view3d.camera_to_view_selected()
+    #
+def render_scene(scene):
 
+    objsFitToCamera()
     renderer = scene.render
 
     # 获取Cycles渲染设备的首选项
@@ -29,14 +33,12 @@ def render_scene(scene, on_render_progress):
     devices = cycles_preferences.get_devices()
     print(">>> devices: ", devices)
     # 激活所有可用的GPU设备
-    # if devices:
-    #     for device in devices:
-    #         if device.type == 'CUDA':  # 如果使用NVIDIA GPU，改为'OPENCL'如果使用AMD GPU
-    #             device.use = True
+    if devices:
+        for device in devices:
+            if device.type == 'CUDA':  # 如果使用NVIDIA GPU，改为'OPENCL'如果使用AMD GPU
+                device.use = True
     # 设置设备类型为GPU
     scene.cycles.device = 'GPU'
-
-
 
     # Set the background to use an environment texture
     # bpy.context.scene.render.film_transparent = True
@@ -60,22 +62,16 @@ def render_scene(scene, on_render_progress):
     rimg_resolution  = 256
     # renderer.engine = 'BLENDER_EEVEE'
     renderer.engine = 'CYCLES'
-    renderer.image_settings.file_format='PNG'
-    renderer.filepath = rootDir + "voxblender/renderingImg/renderBlenderFile.png"
+    renderer.image_settings.file_format='JPEG'
+    renderer.filepath = rootDir + "voxblender/renderingImg/renderBlenderFile2.jpg"
     renderer.resolution_x = rimg_resolution
     renderer.resolution_y = rimg_resolution
     bpy.context.scene.cycles.samples = 64
     bpy.ops.render.render(write_still=True)
     # bpy.ops.render.render('INVOKE_DEFAULT', animation=False, write_still=True)
 
-def on_render_progress(scene, path):
-    current_frame = scene.frame_current
-    total_frames = scene.frame_end - scene.frame_start + 1
-    progress = (current_frame - scene.frame_start) / total_frames
-    print(f"渲染进度: {progress * 100:.2f}%")
-
 scene = bpy.context.scene
-render_scene(scene, on_render_progress)
+render_scene(scene)
 # thread = threading.Thread(target=render_scene, args=(scene, on_render_progress))
 # # thread = threading.Thread(target=render_scene, args=(on_render_progress))
 # thread.start()
@@ -84,7 +80,7 @@ render_scene(scene, on_render_progress)
 #     # print("###")
 #     time.sleep(0.1)
 #     #
-# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\renderBlenderFile.py
-# D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\renderBlenderFile.py
-# D:\programs\blender\blender.exe -b ..\..\..\models\fruit_apple.blend -P .\renderBlenderFile.py
-# D:\programs\blender\blender.exe -b D:\modling\res\b4kTexGlb.blend -P .\renderBlenderFile.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\scene01.blend -P .\renderBlenderFile2.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\scene05.blend -P .\renderBlenderFile2.py
+# D:\programs\blender\blender.exe -b ..\..\..\models\fruit_apple.blend -P .\renderBlenderFile2.py
+# D:\programs\blender\blender.exe -b D:\modling\res\b4kTexGlb.blend -P .\renderBlenderFile2.py

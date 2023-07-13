@@ -12,20 +12,21 @@ if not dir in sys.path:
 
 import meshObjScaleUtils
 
-rootDir = "D:/dev/webProj/"
-# rootDir = "D:/dev/webdev/"
+rootDir = "D:/dev/webdev/"
+if not os.path.exists(rootDir):
+    rootDir = "D:/dev/webProj/"
 
-def clearAllMeshesInScene():
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.ops.object.select_by_type(type='MESH')
-    bpy.ops.object.delete()
-    #
 def clearScene():    
     obj = bpy.data.objects["Cube"]
     if obj:
         bpy.data.objects.remove(obj)
     else:
         print("has not the default Cube object in the current scene.")
+def clearAllMeshesInScene():
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.object.select_by_type(type='MESH')
+    bpy.ops.object.delete()
+    #
 ################################################################################
 def loadAObjMesh(obj_file):
     # 加载OBJ模型
@@ -94,6 +95,7 @@ modelUrl = rootDir + "voxblender/models/apple01.usdc"
 # modelUrl = rootDir + "voxblender/models/model03.glb"
 # modelUrl = rootDir + "voxblender/private/glb/xiezi-en.glb"
 modelUrl = rootDir + "voxblender/models/scene03.fbx"
+modelUrl = rootDir + "voxblender/models/fruit_apple.glb"
 # modelUrl = rootDir + "voxblender/models/scene03.glb"
 loadModelWithUrl(modelUrl)
 
@@ -106,29 +108,19 @@ mesh_objectDict = {}
 mesh_obj_names = []
 mesh_objs = []
 
-# # create dict with meshes
-# for m in bpy.data.meshes:
-#     mesh_objectDict[m.name] = []
-# # attach objects to dict keys
-# for o in bpy.context.scene.objects:
-#     # only for meshes
-#     if o.type == 'MESH':
-#         # if this mesh exists in the dict
-#         if o.data.name in mesh_objectDict:
-#             # object name mapped to mesh
-#             mesh_obj_names.append(o.data.name)
-#             mesh_objs.append(o)
-
-# # meshes = set(o.data for o in scene.objects if o.type == 'MESH')
-# print("mesh_obj_names: ", mesh_obj_names)
-# print("mesh_objectDict: ", mesh_objectDict)
-# print("mesh_objs: ", mesh_objs)
-
-
-# scaleFlag = meshObjScaleUtils.uniformScaleObjsByValue(0.05, mesh_obj_names, sceneObjects)
-# scaleFlag = meshObjScaleUtils.uniformScaleObjs((2.0, 2.0, 2.0), mesh_obj_names, sceneObjects)
-scaleFlag = meshObjScaleUtils.uniformScaleSceneObjs((2.0, 2.0, 2.0))
+camera_object = bpy.data.objects["Camera"]
+cvlist = camera_object.matrix_world
+print(" cam matrix A: ", cvlist[0])
+print("             : ", cvlist[1])
+print("             : ", cvlist[2])
+print("             : ", cvlist[3])
+# scaleFlag = meshObjScaleUtils.uniformScaleSceneObjs((2.0, 2.0, 2.0))
 objsFitToCamera()
+cvlist = camera_object.matrix_world
+print(" cam matrix B: ", cvlist[0])
+print("             : ", cvlist[1])
+print("             : ", cvlist[2])
+print("             : ", cvlist[3])
 
 # Set the background to use an environment texture
 # bpy.context.scene.render.film_transparent = True
@@ -155,13 +147,13 @@ bg_tree.links.new(bg_node.outputs['Color'], bg_output.inputs['Color'])
 
 # 设置设备类型为GPU
 bpy.context.scene.cycles.device = 'GPU'
-bpy.context.scene.cycles.samples = 512
+bpy.context.scene.cycles.samples = 128
 
 # print("bpy.context.scene.cycles: ", bpy.context.scene.cycles)
 
 
 output_img_resolution = 4096 // 4
-# output_img_resolution = 256
+output_img_resolution = 256
 # output_img_resolution = 4096 * 2
 
 # 定义渲染进度回调函数

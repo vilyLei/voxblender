@@ -138,10 +138,13 @@ def getSceneObjsBounds():
     # sizeValue = 0
     # attach objects to dict keys
     for obj in bpy.context.scene.objects:
+        print("getSceneObjsBounds(), obj.type: ", obj.type)
         # only for meshes
         if obj.type == 'MESH':
             # if this mesh exists in the dict
             if obj.data.name in mesh_objectDict:
+                # while obj.parent is not None:
+                #     obj = obj.parent
                 # print("getSceneObjsBounds() list(obj.bound_box[0]): ", list(obj.bound_box[0]), obj.dimensions)
                 for v in obj.bound_box:
                     v_world = obj.matrix_world @ mathutils.Vector((v[0],v[1],v[2]))
@@ -191,6 +194,9 @@ def uniformScaleSceneObjs(dstSizeV):
     # 等比缩放
     sx = sy = sz = min(sx, min(sy, sz))
 
+    print("uniformScaleSceneObjs(), sx: ",sx)
+    print("uniformScaleSceneObjs(), sy: ",sy)
+    print("uniformScaleSceneObjs(), sz: ",sz)
     mesh_objectDict = {}
     # create dict with meshes
     for m in bpy.data.meshes:
@@ -198,11 +204,15 @@ def uniformScaleSceneObjs(dstSizeV):
     
     # sizeValue = 0
     # attach objects to dict keys
+    scaleObjs_total = 0
     for obj in bpy.context.scene.objects:
         # only for meshes
         if obj.type == 'MESH':
             # if this mesh exists in the dict
             if obj.data.name in mesh_objectDict:
+                while obj.parent is not None:
+                    print("#obj.parent, dfdfdfdfd")
+                    obj = obj.parent
                 location = obj.location
                 location[0] *= sx
                 location[1] *= sy
@@ -213,6 +223,7 @@ def uniformScaleSceneObjs(dstSizeV):
                 scale[1] *= sy
                 scale[2] *= sz
                 obj.scale = scale
+                scaleObjs_total += 1
                 #
-    print("uniformScaleSceneObjs() end ...")
+    print("uniformScaleSceneObjs() end ..., scaleObjs_total: ", scaleObjs_total)
     return True

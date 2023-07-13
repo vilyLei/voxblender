@@ -63,8 +63,8 @@ def getObjsBounds(meshObjNames, sceneObjects):
     return (minV,  maxV, (width, height, long))
 
 def uniformScaleObjs(dstSizeV, meshObjNames, sceneObjects):
-    print("uniformScaleObjs() init ...")
-    print("uniformScaleObjs() meshObjNames: ", meshObjNames)
+    print("A uniformScaleObjs() init ...")
+    print("A uniformScaleObjs() meshObjNames: ", meshObjNames)
     meshObjs = []
     for ns in meshObjNames:
         if sceneObjects[ns]:
@@ -78,8 +78,10 @@ def uniformScaleObjs(dstSizeV, meshObjNames, sceneObjects):
     sz = dstSizeV[2] / sizeV[2]
     # 等比缩放
     sx = sy = sz = min(sx, min(sy, sz))
+    print("uniformScaleObjs() sx: ", sx)
     for obj in meshObjs:
         location = obj.location
+        print("uniformScaleObjs() location: ", location)
         location[0] *= sx
         location[1] *= sy
         location[2] *= sz

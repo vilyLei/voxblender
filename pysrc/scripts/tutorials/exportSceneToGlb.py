@@ -12,8 +12,8 @@ blend_file_path = bpy.data.filepath
 directory = os.path.dirname(blend_file_path)
 directory = ""
 
-target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/export_glb.glb")
-bpy.ops.export_scene.gltf(filepath=target_file, export_lights=True, export_cameras=True)
+target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/gltf02/export_glb.gltf")
+bpy.ops.export_scene.gltf(filepath=target_file, export_lights=True, export_cameras=True,export_format='GLTF_SEPARATE',export_draco_mesh_compression_enable=True)
 
 
 # target_file = os.path.join(directory, "D:/dev/webProj/voxblender/renderingImg/export_bld.blend")
