@@ -104,7 +104,7 @@ def main():
     # 画模型的训练误差曲线
     plt.figure()
     x = [i*80 for i in range(len(losses))]
-    plt.plot(x,losses,color='C0',marker='s',label='训练')
+    plt.plot(x,losses,color='C0',marker='s',label='Trainning')
     plt.xlabel('Step')
     plt.ylabel('MSE')
     plt.legend()
@@ -112,9 +112,9 @@ def main():
     
     # 画模型的测试准确率曲线
     plt.figure()
-    plt.plot(x,accs,color='C1',marker='s',label='测试')
+    plt.plot(x,accs,color='C1',marker='s',label='Testing')
     plt.xlabel('Step')
-    plt.ylabel('准确率')
+    plt.ylabel('Accuracy')
     plt.legend()
     plt.savefig('test.svg')
 
